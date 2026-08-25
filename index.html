@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#E8E9E2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Steps">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Order My Steps</title>
+<style>
+/* ─────────────────────────────────────────────
+   ORDER MY STEPS
+   Two pens: the day is blue ink, the comment is red.
+   No ruled lines — deliberate. Book 6's rules were rejected.
+   ───────────────────────────────────────────── */
+:root{
+  --paper:      #E8E9E2;
+  --paper-deep: #DEDFD6;
+  --ink:        #1B2A4A;   /* ballpoint blue — the day */
+  --ink-soft:   #5A6884;
+  --ink-faint:  #949BA9;
+  --red:        #8C2F39;   /* red biro — written after the fact */
+  --red-soft:   #B3625F;
+  --rule:       #C7C9BD;
+  --rule-soft:  #D6D8CD;
+
+  --mono: ui-monospace, "Roboto Mono", "DejaVu Sans Mono", "Courier New", monospace;
+  --serif: "Noto Serif", Georgia, "Times New Roman", serif;
+
+  --pad: 20px;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:64px;
+}
+
+.wrap{ max-width:560px; margin:0 auto; padding:0 var(--pad); }
+
+/* ── header ─────────────────────────────── */
+header{ padding-top:calc(22px + env(safe-area-inset-top)); }
+
+.datebar{ display:flex; align-items:flex-end; gap:10px; }
+
+.arrow{
+  border:0; background:none; cursor:pointer; padding:6px 4px;
+  font-family:var(--mono); font-size:19px; color:var(--ink-faint);
+  line-height:1;
+}
+.arrow:hover{ color:var(--ink); }
+
+.datebtn{
+  flex:1; border:0; background:none; cursor:pointer; padding:0;
+  text-align:left; color:inherit; font-family:inherit;
+}
+.weekday{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-faint); display:block;
+  margin-bottom:2px;
+}
+.daynum{
+  font-family:var(--serif); font-size:29px; line-height:1.05;
+  letter-spacing:-.015em; display:block;
+}
+.daynum .yr{ color:var(--ink-faint); }
+
+.status{
+  font-family:var(--mono); font-size:10px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-faint);
+  margin:12px 0 0; min-height:13px;
+}
+.status.closed{ color:var(--red-soft); }
+
+hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
+
+/* ── the two blocks ─────────────────────── */
+#blocks{ margin-top:26px; }
+
+.block{ margin-bottom:8px; }
+.block + .block{ margin-top:32px; }
+
+.block h2{
+  font-family:var(--mono); font-size:10.5px; font-weight:400;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-soft); margin:0 0 14px;
+}
+
+/* an item = box + text. No rules between. Space is the separator. */
+.item{ display:flex; align-items:flex-start; gap:11px; margin-bottom:3px; }
+
+.box{
+  flex:none; width:17px; height:17px; margin-top:5px;
+  border:1.4px solid var(--ink-soft); border-radius:2px;
+  background:none; cursor:pointer; padding:0; position:relative;
+}
+.box[disabled]{ cursor:default; border-color:var(--ink-faint); }
+.box.on::after{
+  content:""; position:absolute; left:3px; top:5.5px;
+  width:9px; height:4.5px;
+  border-left:1.9px solid var(--ink); border-bottom:1.9px solid var(--ink);
+  transform:rotate(-45deg);
+}
+.closed .box.on::after{ border-color:var(--ink-soft); }
+
+.txt{
+  flex:1; border:0; background:none; padding:4px 0 4px;
+  font-family:var(--serif); font-size:17px; line-height:1.5;
+  color:var(--ink); resize:none; overflow:hidden;
+  min-height:29px;
+}
+.txt:focus{ outline:none; }
+.txt::placeholder{ color:var(--ink-faint); }
+.txt[readonly]{ color:var(--ink-soft); }
+
+.kill{
+  flex:none; border:0; background:none; cursor:pointer;
+  font-family:var(--mono); font-size:15px; color:var(--rule);
+  padding:5px 2px 0; line-height:1;
+}
+.kill:hover{ color:var(--red); }
+
+.adder .box{ border-style:dashed; border-color:var(--rule); cursor:text; }
+
+/* ── the red layer: everything written after ── */
+.note, .daycomment{
+  font-family:var(--serif); font-size:15.5px; color:var(--red);
+  line-height:1.45;
+}
+.note{ margin:0 0 12px 28px; padding-left:11px; border-left:1.5px solid rgba(140,47,57,.28); }
+.note-body, .dc-body{
+  width:100%; border:0; background:none; padding:2px 0;
+  font-family:inherit; font-size:inherit; color:inherit; line-height:inherit;
+  resize:none; overflow:hidden;
+}
+.note-body:focus, .dc-body:focus{ outline:none; }
+
+.stamp{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--red-soft); margin-top:3px;
+}
+
+.addnote{
+  border:0; background:none; cursor:pointer; padding:2px 0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--red-soft);
+  margin:0 0 12px 39px;
+}
+.addnote:hover{ color:var(--red); }
+
+.daycomment{ margin-top:20px; padding-top:16px; border-top:1px solid var(--rule-soft); }
+.daycomment h3{
+  font-family:var(--mono); font-size:10.5px; font-weight:400;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--red-soft);
+  margin:0 0 8px;
+}
+
+/* ── swap ───────────────────────────────── */
+.swaprow{ display:flex; justify-content:flex-end; margin:16px 0 24px; }
+.swap{
+  border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:999px; padding:7px 14px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-soft);
+}
+.swap:hover{ border-color:var(--ink-soft); color:var(--ink); }
+.swap .g{ display:inline-block; margin-right:7px; transform:translateY(1px); }
+
+#blocks.moving{ transition:none; }
+.block{ transition:opacity .22s ease, transform .22s ease; }
+.block.fade{ opacity:0; transform:translateY(6px); }
+@media (prefers-reduced-motion: reduce){ .block{ transition:none; } }
+
+/* ── calendar ───────────────────────────── */
+.cal{ display:none; margin-top:18px; padding-bottom:6px; }
+.cal.open{ display:block; }
+.calhead{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px;
+}
+.calmonth{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--ink-soft);
+}
+.grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:1px; }
+.dow{
+  font-family:var(--mono); font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-faint);
+  text-align:center; padding-bottom:6px;
+}
+.cell{
+  border:0; background:none; cursor:pointer;
+  aspect-ratio:1/1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:3px;
+  font-family:var(--mono); font-size:12.5px; color:var(--ink-soft);
+  border-radius:3px; padding:0;
+}
+.cell:hover{ background:var(--paper-deep); }
+.cell.blank{ cursor:default; }
+.cell.blank:hover{ background:none; }
+.cell.here{ background:var(--ink); color:var(--paper); }
+.cell.now{ box-shadow:inset 0 0 0 1.4px var(--ink-faint); }
+.marks{ display:flex; gap:3px; height:4px; align-items:center; }
+.m-w{ width:4px; height:4px; border-radius:50%; background:var(--ink); }
+.m-c{ width:4px; height:4px; border-radius:50%; background:var(--red); }
+.cell.here .m-w{ background:var(--paper); }
+.cell.here .m-c{ background:#E8A0A0; }
+.callegend{
+  font-family:var(--mono); font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-faint);
+  margin-top:12px; display:flex; gap:16px;
+}
+.callegend b{ font-weight:400; }
+.callegend i{ display:inline-block; width:4px; height:4px; border-radius:50%; margin-right:5px; transform:translateY(-1px); }
+
+/* ── the Gate ───────────────────────────── */
+/* Stands before a day nothing is written on. Holds, then opens itself.
+   No tap, no skip — there is nothing to do, so there is nothing to fight. */
+#gate{
+  position:fixed; inset:0; z-index:60; background:var(--paper);
+  display:none; align-items:center; justify-content:center;
+  padding:36px 30px; text-align:center;
+  opacity:0; transition:opacity .5s ease;
+}
+#gate.up{ display:flex; opacity:1; }
+#gate.going{ opacity:0; }
+.gate-in{ max-width:400px; width:100%; }
+
+.gate-verse{
+  font-family:var(--serif); font-size:19px; line-height:1.62;
+  color:var(--ink); margin:0;
+}
+.gate-ref{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-faint); margin-top:12px;
+}
+.gate-say{
+  font-family:var(--mono); font-size:12px; letter-spacing:.34em;
+  text-transform:uppercase; color:var(--red);
+  margin:52px 0; line-height:1.6;
+}
+.gate-mine{ margin-top:0; }
+.gate-mine .gate-verse{ font-size:16.5px; color:var(--ink-soft); font-style:italic; }
+.gate-mine .gate-ref{ margin-top:10px; }
+.gate-bare{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+@media (prefers-reduced-motion: reduce){
+  #gate{ transition:none; }
+}
+
+/* ── footer / keep ──────────────────────── */
+footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft); }
+.footlink{
+  border:0; background:none; cursor:pointer; padding:4px 0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.footlink:hover{ color:var(--ink-soft); }
+.verse{
+  font-family:var(--serif); font-style:italic; font-size:13px;
+  color:var(--ink-faint); margin-top:14px; line-height:1.5;
+}
+
+/* ── keep sheet ─────────────────────────── */
+.veil{
+  position:fixed; inset:0; background:rgba(27,42,74,.34);
+  display:none; z-index:40;
+}
+.veil.open{ display:block; }
+.sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:41;
+  background:var(--paper); border-top:1px solid var(--rule);
+  max-height:88vh; overflow-y:auto; display:none;
+  padding:24px var(--pad) calc(28px + env(safe-area-inset-bottom));
+  border-radius:14px 14px 0 0;
+}
+.sheet.open{ display:block; }
+.sheet-in{ max-width:560px; margin:0 auto; }
+.sheet h2{
+  font-family:var(--mono); font-size:10.5px; font-weight:400;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft);
+  margin:0 0 16px;
+}
+.sheet h3{
+  font-family:var(--mono); font-size:9.5px; font-weight:400;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
+  margin:26px 0 8px;
+}
+.sheet p{ font-size:14.5px; line-height:1.55; color:var(--ink-soft); margin:0 0 10px; }
+.code{
+  width:100%; min-height:74px; border:1px solid var(--rule);
+  border-radius:4px; background:rgba(255,255,255,.42);
+  font-family:var(--mono); font-size:11px; line-height:1.5;
+  color:var(--ink-soft); padding:10px; resize:vertical;
+  word-break:break-all;
+}
+.code:focus{ outline:none; border-color:var(--ink-soft); }
+.btn{
+  border:1px solid var(--ink-soft); background:none; cursor:pointer;
+  border-radius:999px; padding:9px 17px; margin:10px 8px 0 0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink);
+}
+.btn:hover{ background:var(--ink); color:var(--paper); }
+.btn.quiet{ border-color:var(--rule); color:var(--ink-faint); }
+.btn.quiet:hover{ background:none; border-color:var(--ink-soft); color:var(--ink-soft); }
+.said{
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--red); min-height:14px;
+  margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="datebar">
+      <button class="arrow" id="prev" aria-label="Previous day">&larr;</button>
+      <button class="datebtn" id="datebtn" aria-expanded="false">
+        <span class="weekday" id="wd">—</span>
+        <span class="daynum" id="dn">—</span>
+      </button>
+      <button class="arrow" id="next" aria-label="Next day">&rarr;</button>
+    </div>
+    <p class="status" id="status"></p>
+    <hr class="hair">
+
+    <div class="cal" id="cal">
+      <div class="calhead">
+        <button class="arrow" id="mprev" aria-label="Previous month">&larr;</button>
+        <span class="calmonth" id="cmonth"></span>
+        <button class="arrow" id="mnext" aria-label="Next month">&rarr;</button>
+      </div>
+      <div class="grid" id="dows"></div>
+      <div class="grid" id="cells"></div>
+      <div class="callegend">
+        <b><i class="m-w"></i>written</b>
+        <b><i class="m-c"></i>comment</b>
+      </div>
+    </div>
+  </header>
+
+  <main id="blocks"></main>
+
+  <footer>
+    <button class="footlink" id="keepbtn">Keep &amp; restore</button>
+    <button class="footlink" id="gatebtn" style="margin-left:22px">The gate</button>
+    <p class="verse">&ldquo;Order my steps in thy word.&rdquo; &mdash; Psalm 119:133</p>
+  </footer>
+</div>
+
+<div id="gate">
+  <div class="gate-in">
+    <p class="gate-verse">Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.</p>
+    <div class="gate-ref">Proverbs 3:5&ndash;6</div>
+
+    <div class="gate-say">God is listening</div>
+
+    <div class="gate-mine" id="gatemine"></div>
+  </div>
+</div>
+
+<div class="sheet" id="gsheet">
+  <div class="sheet-in">
+    <h2>The gate</h2>
+    <p>Before a day you have not written on, the gate stands. It holds, then opens on its own — there is nothing to tap. The time is yours to pray in.</p>
+
+    <h3>How long it holds</h3>
+    <input class="code" id="gsecs" type="number" min="5" step="1"
+           style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+    <p style="font-size:13px;margin-top:8px">Seconds. Five is the least it can be; there is no most.</p>
+    <div><button class="btn" id="gsave">Save</button></div>
+    <p class="said" id="said3"></p>
+
+    <h3>Your verse over the gate</h3>
+    <p>Proverbs 3:5&ndash;6 stays. Beneath it goes a verse of your own — the one that jumped at you. Change it whenever it stops being the one.</p>
+    <textarea class="code" id="gverse" style="font-family:var(--serif);font-size:15px"></textarea>
+    <input class="code" id="gref" placeholder="Reference"
+           style="min-height:0;height:40px;font-size:13px;padding:0 12px;margin-top:8px">
+    <div><button class="btn" id="gvsave">Save verse</button>
+         <button class="btn quiet" id="gvclear">Leave it bare</button></div>
+    <p class="said" id="said4"></p>
+
+    <div><button class="btn quiet" id="gclose" style="margin-top:26px">Close</button></div>
+  </div>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-in">
+    <h2>Keep &amp; restore</h2>
+    <p>Your days live on this phone only. Nothing is sent anywhere, so nothing can be recovered for you. Keeping a copy is the one habit this asks of you.</p>
+
+    <h3>Save a file</h3>
+    <p>The plain way. It lands in your downloads with today's date on it, and your phone already backs up files without being asked. Open it in five years and it is still readable, with or without this app.</p>
+    <div><button class="btn" id="filebtn">Save a file</button>
+         <button class="btn quiet" id="loadbtn">Restore from a file</button></div>
+    <input type="file" id="fileinput" accept=".json,.txt,application/json,text/plain" style="display:none">
+    <p class="said" id="said5"></p>
+
+    <h3>Or a code</h3>
+    <p>Shorter, for moving straight onto another phone. Paste it into a note or email it to yourself.</p>
+    <textarea class="code" id="outcode" readonly></textarea>
+    <div>
+      <button class="btn" id="copybtn">Copy code</button>
+      <button class="btn quiet" id="makebtn">Make a fresh one</button>
+    </div>
+    <p class="said" id="said1"></p>
+
+    <h3>Restore from a code</h3>
+    <p>This replaces everything now on this phone. Keep a copy first if there is anything here worth keeping.</p>
+    <textarea class="code" id="incode" placeholder="Paste a code"></textarea>
+    <div><button class="btn" id="restorebtn">Restore</button></div>
+    <p class="said" id="said2"></p>
+
+    <div><button class="btn quiet" id="closebtn" style="margin-top:26px">Close</button></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ══ storage ══════════════════════════════════════════════ */
+const KEY = 'ordermysteps-v1';
+let S = { v:1, days:{} };
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){ const p = JSON.parse(raw); if(p && p.days) S = p; }
+  }catch(e){ /* start clean rather than crash */ }
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch(e){ say('said1','Could not save — storage may be full'); }
+}
+
+/* ══ dates ════════════════════════════════════════════════ */
+const DOW  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON  = ['January','February','March','April','May','June','July',
+              'August','September','October','November','December'];
+const MSH  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function keyOf(d){
+  return d.getFullYear() + '-' +
+         String(d.getMonth()+1).padStart(2,'0') + '-' +
+         String(d.getDate()).padStart(2,'0');
+}
+function dateOf(k){ const [y,m,d]=k.split('-').map(Number); return new Date(y,m-1,d); }
+function todayKey(){ return keyOf(new Date()); }
+function shortStamp(k){ const d=dateOf(k); return MSH[d.getMonth()]+' '+d.getDate(); }
+
+/* Midnight is midnight. A day earlier than today cannot be touched. */
+function isClosed(k){ return k < todayKey(); }
+
+/* ══ session state (never saved) ══════════════════════════ */
+let view      = todayKey();   // the day on screen
+let calMonth  = new Date();   // month shown in the calendar
+let prepFirst = false;        // the swap — resets every sitting, every day
+let calOpen   = false;
+let lastToday = todayKey();
+
+/* ══ day helpers ══════════════════════════════════════════ */
+function day(k, make){
+  if(!S.days[k] && make) S.days[k] = { tasks:[], prep:[], c:null };
+  return S.days[k] || { tasks:[], prep:[], c:null };
+}
+function hasWriting(k){
+  const d = S.days[k]; if(!d) return false;
+  const live = a => (a||[]).some(i => (i.t||'').trim());
+  return live(d.tasks) || live(d.prep);
+}
+function hasComment(k){
+  const d = S.days[k]; if(!d) return false;
+  if(d.c && (d.c.t||'').trim()) return true;
+  return ['tasks','prep'].some(L =>
+    (d[L]||[]).some(i => i.n && (i.n.t||'').trim()));
+}
+function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ══ render: the day ══════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+function grow(el){ el.style.height='auto'; el.style.height=(el.scrollHeight)+'px'; }
+
+function render(){
+  const d = dateOf(view), closed = isClosed(view), today = view === todayKey();
+
+  $('wd').textContent = DOW[d.getDay()].toUpperCase() + (today ? ' — TODAY' : '');
+  $('dn').innerHTML = d.getDate() + ' ' + MON[d.getMonth()] +
+                      ' <span class="yr">' + d.getFullYear() + '</span>';
+
+  const st = $('status');
+  if(closed){ st.textContent = 'Closed — comments only'; st.className='status closed'; }
+  else if(today){ st.textContent = ''; st.className='status'; }
+  else { st.textContent = 'Ahead — written for later'; st.className='status'; }
+
+  const blocks = $('blocks');
+  blocks.innerHTML = '';
+  const order = prepFirst ? ['prep','tasks'] : ['tasks','prep'];
+
+  order.forEach((L,i) => {
+    blocks.appendChild(listBlock(L, closed));
+    if(i === 0 && !closed) blocks.appendChild(swapRow());
+  });
+
+  if(closed) blocks.appendChild(dayCommentBlock());
+
+  document.querySelectorAll('textarea.txt, .note-body, .dc-body').forEach(grow);
+  if(calOpen) renderCal();
+  if(gateDue(view)) raiseGate(view);
+}
+
+function swapRow(){
+  const row = document.createElement('div');
+  row.className = 'swaprow';
+  const b = document.createElement('button');
+  b.className = 'swap';
+  b.innerHTML = '<span class="g">&#8645;</span>' + (prepFirst ? 'Tasks on top' : 'Prepare on top');
+  b.onclick = () => {
+    const bs = document.querySelectorAll('.block');
+    bs.forEach(x => x.classList.add('fade'));
+    setTimeout(() => { prepFirst = !prepFirst; render(); }, 180);
+  };
+  row.appendChild(b);
+  return row;
+}
+
+function listBlock(L, closed){
+  const wrap = document.createElement('section');
+  wrap.className = 'block' + (closed ? ' closed' : '');
+
+  const h = document.createElement('h2');
+  h.textContent = L === 'tasks' ? 'Tasks for the day' : 'Prepare a day before';
+  wrap.appendChild(h);
+
+  const items = day(view)[L] || [];
+  items.forEach(it => {
+    wrap.appendChild(itemRow(L, it, closed));
+    if(closed) wrap.appendChild(noteFor(L, it));
+  });
+
+  if(!closed) wrap.appendChild(adder(L));
+  return wrap;
+}
+
+function itemRow(L, it, closed){
+  const row = document.createElement('div');
+  row.className = 'item';
+
+  const box = document.createElement('button');
+  box.className = 'box' + (it.d ? ' on' : '');
+  box.setAttribute('aria-label', it.d ? 'Done' : 'Not done');
+  if(closed){ box.disabled = true; }
+  else box.onclick = () => {
+    const cur = day(view, true)[L].find(x => x.id === it.id);
+    if(cur){ cur.d = !cur.d; save(); render(); }
+  };
+  row.appendChild(box);
+
+  const ta = document.createElement('textarea');
+  ta.className = 'txt'; ta.rows = 1; ta.value = it.t || '';
+  if(closed) ta.readOnly = true;
+  else{
+    ta.oninput = () => {
+      grow(ta);
+      const cur = day(view, true)[L].find(x => x.id === it.id);
+      if(cur){ cur.t = ta.value; save(); }
+    };
+    ta.onkeydown = e => {
+      if(e.key === 'Enter'){ e.preventDefault(); ta.blur(); focusAdder(L); }
+    };
+  }
+  row.appendChild(ta);
+
+  if(!closed){
+    const k = document.createElement('button');
+    k.className = 'kill'; k.textContent = '\u00d7';
+    k.setAttribute('aria-label','Remove this line');
+    k.onclick = () => {
+      const arr = day(view, true)[L];
+      const i = arr.findIndex(x => x.id === it.id);
+      if(i > -1){ arr.splice(i,1); save(); render(); }
+    };
+    row.appendChild(k);
+  }
+  return row;
+}
+
+function adder(L){
+  const row = document.createElement('div');
+  row.className = 'item adder';
+
+  const box = document.createElement('span');
+  box.className = 'box'; row.appendChild(box);
+
+  const ta = document.createElement('textarea');
+  ta.className = 'txt'; ta.rows = 1;
+  ta.dataset.adder = L;
+  ta.placeholder = L === 'tasks' ? 'Add a task' : 'Add something to prepare';
+  let sent = false;
+  const commit = () => {
+    if(sent) return false;
+    const v = ta.value.trim();
+    if(!v) return false;
+    sent = true;
+    ta.value = '';                 // so the blur that follows re-render sees nothing
+    day(view, true)[L].push({ id:newId(), t:v, d:false, n:null });
+    save(); render(); focusAdder(L);
+    return true;
+  };
+  ta.oninput = () => grow(ta);
+  ta.onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); commit(); } };
+  ta.onblur = commit;
+  row.appendChild(ta);
+  return row;
+}
+function focusAdder(L){
+  const el = document.querySelector('textarea[data-adder="' + L + '"]');
+  if(el){ el.value=''; grow(el); el.focus(); }
+}
+
+/* ── the red layer ─────────────────────────────────────── */
+function stampText(n){
+  if(!n || !n.w) return '';
+  let s = 'written ' + shortStamp(n.w);
+  if(n.e && n.e !== n.w) s += ' \u00b7 edited ' + shortStamp(n.e);
+  return s;
+}
+
+function noteFor(L, it){
+  const box = document.createElement('div');
+
+  if(!it.n){
+    const b = document.createElement('button');
+    b.className = 'addnote'; b.textContent = '+ note';
+    b.onclick = () => {
+      const cur = day(view, true)[L].find(x => x.id === it.id);
+      cur.n = { t:'', w:todayKey(), e:null };
+      save(); render();
+      const t = document.querySelector('[data-note="' + it.id + '"]');
+      if(t) t.focus();
+    };
+    box.appendChild(b);
+    return box;
+  }
+
+  box.className = 'note';
+  const ta = document.createElement('textarea');
+  ta.className = 'note-body'; ta.rows = 1; ta.value = it.n.t;
+  ta.dataset.note = it.id;
+  ta.oninput = () => {
+    grow(ta);
+    const cur = day(view, true)[L].find(x => x.id === it.id);
+    if(cur && cur.n){
+      cur.n.t = ta.value;
+      if(cur.n.w && todayKey() !== cur.n.w) cur.n.e = todayKey();
+      save();
+      st.textContent = stampText(cur.n);
+    }
+  };
+  ta.onblur = () => {
+    const cur = day(view, true)[L].find(x => x.id === it.id);
+    if(cur && cur.n && !cur.n.t.trim()){ cur.n = null; save(); render(); }
+  };
+  box.appendChild(ta);
+
+  const st = document.createElement('div');
+  st.className = 'stamp'; st.textContent = stampText(it.n);
+  box.appendChild(st);
+  return box;
+}
+
+function dayCommentBlock(){
+  const wrap = document.createElement('section');
+  wrap.className = 'daycomment';
+
+  const h = document.createElement('h3');
+  h.textContent = 'Comment on this day';
+  wrap.appendChild(h);
+
+  const d = day(view, true);
+  if(!d.c) d.c = null;
+
+  const ta = document.createElement('textarea');
+  ta.className = 'dc-body'; ta.rows = 1;
+  ta.value = d.c ? d.c.t : '';
+
+  const st = document.createElement('div');
+  st.className = 'stamp';
+  st.textContent = stampText(d.c);
+
+  ta.oninput = () => {
+    grow(ta);
+    const cur = day(view, true);
+    if(!cur.c) cur.c = { t:'', w:todayKey(), e:null };
+    cur.c.t = ta.value;
+    if(cur.c.w && todayKey() !== cur.c.w) cur.c.e = todayKey();
+    save();
+    st.textContent = stampText(cur.c);
+  };
+  ta.onblur = () => {
+    const cur = day(view, true);
+    if(cur.c && !cur.c.t.trim()){ cur.c = null; save(); st.textContent=''; }
+  };
+
+  wrap.appendChild(ta);
+  wrap.appendChild(st);
+  return wrap;
+}
+
+/* ══ the Gate ═════════════════════════════════════════════
+   Stands before a day nothing is written on. Never before a
+   closed day — a past day cannot be planned, so there is
+   nothing to stand in front of, and that is also the way back
+   in if the hold is ever set too long. */
+
+function gateCfg(){
+  if(!S.gate) S.gate = { secs:5, verse:'', ref:'' };
+  if(!(S.gate.secs >= 5)) S.gate.secs = 5;     // five is the floor. No ceiling.
+  return S.gate;
+}
+function passedSet(){ if(!S.passed) S.passed = {}; return S.passed; }
+
+let gateBusy = false;
+
+function gateDue(k){
+  if(gateBusy) return false;
+  if(isClosed(k)) return false;          // never before a closed day
+  if(passedSet()[k]) return false;       // once passed, open for good
+  return !hasWriting(k);                 // only before a day not yet planned
+}
+
+function raiseGate(k){
+  gateBusy = true;
+  const g = gateCfg();
+
+  const mine = $('gatemine');
+  if((g.verse||'').trim()){
+    mine.innerHTML = '';
+    const v = document.createElement('p');
+    v.className = 'gate-verse'; v.textContent = g.verse.trim();
+    mine.appendChild(v);
+    if((g.ref||'').trim()){
+      const r = document.createElement('div');
+      r.className = 'gate-ref'; r.textContent = g.ref.trim();
+      mine.appendChild(r);
+    }
+  } else {
+    mine.innerHTML = '<div class="gate-bare">your verse goes here</div>';
+  }
+
+  const el = $('gate');
+  el.classList.remove('going');
+  el.classList.add('up');
+
+  setTimeout(() => {
+    el.classList.add('going');
+    setTimeout(() => {
+      el.classList.remove('up','going');
+      passedSet()[k] = 1; save();
+      gateBusy = false;
+    }, 520);
+  }, Math.max(5, g.secs) * 1000);
+}
+
+
+function renderCal(){
+  $('cmonth').textContent = MON[calMonth.getMonth()] + ' ' + calMonth.getFullYear();
+
+  const dows = $('dows');
+  if(!dows.childElementCount){
+    DOW.forEach(x => {
+      const s = document.createElement('div');
+      s.className = 'dow'; s.textContent = x[0];
+      dows.appendChild(s);
+    });
+  }
+
+  const cells = $('cells');
+  cells.innerHTML = '';
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const lead = new Date(y, m, 1).getDay();
+  const len  = new Date(y, m+1, 0).getDate();
+  const tk = todayKey();
+
+  for(let i=0; i<lead; i++){
+    const b = document.createElement('div');
+    b.className = 'cell blank';
+    cells.appendChild(b);
+  }
+  for(let n=1; n<=len; n++){
+    const k = keyOf(new Date(y, m, n));
+    const b = document.createElement('button');
+    b.className = 'cell' + (k===view ? ' here' : '') + (k===tk ? ' now' : '');
+
+    const num = document.createElement('span');
+    num.textContent = n;
+    b.appendChild(num);
+
+    const mk = document.createElement('span');
+    mk.className = 'marks';
+    if(hasWriting(k)){ const s=document.createElement('i'); s.className='m-w'; mk.appendChild(s); }
+    if(hasComment(k)){ const s=document.createElement('i'); s.className='m-c'; mk.appendChild(s); }
+    b.appendChild(mk);
+
+    b.onclick = () => { view = k; render(); };
+    cells.appendChild(b);
+  }
+}
+
+/* ══ backup code ══════════════════════════════════════════ */
+/* Compressed from the first version — there is no plain-text era.
+   OMS1. = gzip + base64. OMS0. = base64 only, used only if the
+   browser has no CompressionStream, so a backup is never impossible. */
+
+function b64enc(bytes){
+  let s = ''; const CH = 0x8000;
+  for(let i=0; i<bytes.length; i+=CH) s += String.fromCharCode.apply(null, bytes.subarray(i, i+CH));
+  return btoa(s);
+}
+function b64dec(str){
+  const s = atob(str.trim());
+  const a = new Uint8Array(s.length);
+  for(let i=0; i<s.length; i++) a[i] = s.charCodeAt(i);
+  return a;
+}
+
+async function makeCode(){
+  const json = JSON.stringify(S);
+  const raw  = new TextEncoder().encode(json);
+  if(typeof CompressionStream === 'function'){
+    try{
+      const cs = new CompressionStream('gzip');
+      const w  = cs.writable.getWriter(); w.write(raw); w.close();
+      const buf = await new Response(cs.readable).arrayBuffer();
+      return 'OMS1.' + b64enc(new Uint8Array(buf));
+    }catch(e){ /* fall through */ }
+  }
+  return 'OMS0.' + b64enc(raw);
+}
+
+async function readCode(code){
+  code = (code || '').trim().replace(/\s+/g, '');
+  const dot = code.indexOf('.');
+  if(dot < 0) throw new Error('no version');
+  const tag = code.slice(0, dot), body = code.slice(dot+1);
+  const bytes = b64dec(body);
+  let json;
+  if(tag === 'OMS1'){
+    const ds = new DecompressionStream('gzip');
+    const w  = ds.writable.getWriter(); w.write(bytes); w.close();
+    json = await new Response(ds.readable).text();
+  } else if(tag === 'OMS0'){
+    json = new TextDecoder().decode(bytes);
+  } else throw new Error('unknown version');
+  const p = JSON.parse(json);
+  if(!p || typeof p !== 'object' || !p.days) throw new Error('not a code from here');
+  return p;
+}
+
+function say(id, msg){ $(id).textContent = msg; setTimeout(()=>{ if($(id).textContent===msg) $(id).textContent=''; }, 4000); }
+
+async function fillCode(){
+  try{ $('outcode').value = await makeCode(); }
+  catch(e){ $('outcode').value = ''; say('said1','Could not build a code'); }
+}
+
+/* ══ the file — the default way to keep it ════════════════
+   Readable plain text, not a code in disguise. If this app is
+   gone in five years the file still opens and still reads. */
+
+function fileName(){ return 'order-my-steps-' + keyOf(new Date()) + '.json'; }
+
+function saveFile(){
+  const blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = fileName();
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+async function readFile(file){
+  const t = (await file.text()).trim();
+  if(t.startsWith('OMS')) return await readCode(t);   // a code that was saved as a file
+  const p = JSON.parse(t);
+  if(!p || typeof p !== 'object' || !p.days) throw new Error('not from here');
+  return p;
+}
+
+function applyRestored(p){
+  S = p; save();
+  view = todayKey(); prepFirst = false; gateBusy = false;
+  render();
+}
+
+/* ══ wiring ═══════════════════════════════════════════════ */
+function step(n){
+  const d = dateOf(view); d.setDate(d.getDate() + n);
+  view = keyOf(d); calMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+  render();
+}
+$('prev').onclick = () => step(-1);
+$('next').onclick = () => step(1);
+
+$('datebtn').onclick = () => {
+  calOpen = !calOpen;
+  $('cal').classList.toggle('open', calOpen);
+  $('datebtn').setAttribute('aria-expanded', String(calOpen));
+  if(calOpen){ calMonth = new Date(dateOf(view).getFullYear(), dateOf(view).getMonth(), 1); renderCal(); }
+};
+$('mprev').onclick = () => { calMonth.setMonth(calMonth.getMonth()-1); renderCal(); };
+$('mnext').onclick = () => { calMonth.setMonth(calMonth.getMonth()+1); renderCal(); };
+
+function openGateSheet(on){
+  $('gsheet').classList.toggle('open', on);
+  $('veil').classList.toggle('open', on);
+  if(on){
+    const g = gateCfg();
+    $('gsecs').value = g.secs;
+    $('gverse').value = g.verse || '';
+    $('gref').value = g.ref || '';
+  }
+}
+$('gatebtn').onclick = () => openGateSheet(true);
+$('gclose').onclick  = () => openGateSheet(false);
+
+$('gsave').onclick = () => {
+  const n = Math.floor(Number($('gsecs').value));
+  if(!(n >= 5)){ $('gsecs').value = 5; gateCfg().secs = 5; save(); say('said3','Five seconds is the least'); return; }
+  gateCfg().secs = n; save();
+  say('said3', n + ' seconds');
+};
+$('gvsave').onclick = () => {
+  const g = gateCfg();
+  g.verse = $('gverse').value.trim();
+  g.ref   = $('gref').value.trim();
+  save(); say('said4', g.verse ? 'Set over the gate' : 'Left bare');
+};
+$('gvclear').onclick = () => {
+  const g = gateCfg();
+  g.verse = ''; g.ref = '';
+  $('gverse').value = ''; $('gref').value = '';
+  save(); say('said4','Left bare');
+};
+
+function openSheet(on){
+  $('sheet').classList.toggle('open', on);
+  $('veil').classList.toggle('open', on);
+  if(on) fillCode();
+}
+$('keepbtn').onclick  = () => openSheet(true);
+$('closebtn').onclick = () => openSheet(false);
+$('veil').onclick     = () => { openSheet(false); openGateSheet(false); };
+$('makebtn').onclick  = fillCode;
+
+$('copybtn').onclick = async () => {
+  const t = $('outcode');
+  try{
+    await navigator.clipboard.writeText(t.value);
+    say('said1','Copied');
+  }catch(e){
+    t.removeAttribute('readonly'); t.select();
+    try{ document.execCommand('copy'); say('said1','Copied'); }
+    catch(e2){ say('said1','Select it and copy by hand'); }
+    t.setAttribute('readonly','');
+  }
+};
+
+$('filebtn').onclick = () => { saveFile(); say('said5','Saved to your downloads'); };
+$('loadbtn').onclick = () => $('fileinput').click();
+$('fileinput').onchange = async e => {
+  const f = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if(!f) return;
+  try{ applyRestored(await readFile(f)); say('said5','Restored from ' + f.name); }
+  catch(err){ say('said5','That file could not be read'); }
+};
+
+$('restorebtn').onclick = async () => {
+  const v = $('incode').value;
+  if(!v.trim()){ say('said2','Paste a code first'); return; }
+  try{
+    applyRestored(await readCode(v));
+    $('incode').value = '';
+    say('said2','Restored');
+  }catch(e){
+    say('said2','That code could not be read');
+  }
+};
+
+/* Midnight closes the day, even with the app left open. */
+setInterval(() => {
+  const t = todayKey();
+  if(t !== lastToday){
+    lastToday = t;
+    prepFirst = false;          // a new day opens with Tasks on top
+    if(view < t) { /* the day just closed under you — stay put, now read-only */ }
+    render();
+  }
+}, 15000);
+
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden){
+    const t = todayKey();
+    if(t !== lastToday){ lastToday = t; prepFirst = false; }
+    render();
+  }
+});
+
+load();
+render();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
