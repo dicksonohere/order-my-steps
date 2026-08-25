@@ -374,12 +374,61 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
   text-transform:uppercase; color:var(--ink-faint);
 }
 .mremind:hover{ color:var(--ink); }
+/* Decision 49. It was the colour of a rule, and nobody knew it was a
+   button. Now it is a red pill — until the first commit is ever made,
+   after which it settles to red text for good. Loud once, then quiet:
+   Decision 35's shape, set by what you did rather than by a switch. */
 .mcommit{
-  border:0; background:none; cursor:pointer; padding:0;
+  border:1px solid rgba(140,47,57,.32); background:none; cursor:pointer;
+  border-radius:5px; padding:3px 9px;
   font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--rule);
+  text-transform:uppercase; color:var(--red);
 }
-.mcommit:hover{ color:var(--red); }
+.mcommit:hover{ border-color:var(--red); }
+body.knows .mcommit{ border-color:transparent; padding:3px 0; }
+body.knows .mcommit:hover{ border-color:transparent; color:var(--red-soft); }
+
+/* Decision 64 — a repeating instance must not look like a captured
+   thought, because throwing one out means two different things. */
+.rec{
+  font-family:var(--mono); font-size:11px; color:var(--red-soft);
+  margin-left:8px; letter-spacing:0;
+}
+
+/* ── things that keep coming back ───────── */
+.dowpick{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.dowb{
+  border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:999px; padding:8px 12px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--ink-soft);
+}
+.dowb.on{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.rwhat{ font-family:var(--serif); font-style:italic; color:var(--red); }
+.rrow{
+  display:flex; align-items:baseline; gap:12px;
+  padding:11px 0; border-bottom:1px solid var(--rule-soft);
+}
+.rrow .rt{ flex:1; font-family:var(--serif); font-size:16px; color:var(--ink); }
+.rrow .rw{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.rrow .rend{
+  border:0; background:none; cursor:pointer; padding:2px 0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.rrow .rend:hover{ color:var(--red); }
+.rnone{ font-size:14px; color:var(--ink-faint); }
+
+/* Decision 57 — Enter is the fast path; this is the same act, visible.
+   §3 drew it from the first version and it was never built. */
+.addbtn{
+  display:block; margin:2px 0 0 auto; border:0; background:none; cursor:pointer;
+  padding:6px 2px; font-family:var(--mono); font-size:9.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
+}
+.addbtn:hover{ color:var(--ink); }
 
 /* ── commit ─────────────────────────────── */
 #commit{
@@ -426,6 +475,29 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
   font-family:var(--mono); font-size:15px; color:var(--ink-faint); padding:8px 16px;
 }
 .cm-x:hover{ color:var(--ink); }
+
+/* Decisions 58 and 59 — your own verse, beneath the clock, where the
+   eye settles. Proverbs 16:3 is above and is supplied; this one you
+   chose, and it is the one that gets read. Tappable while the length
+   is still being picked; fixed once the clock runs, because a screen
+   that can change under you is not one you can pray in front of. */
+#cmverse{
+  margin-top:40px; border:0; background:none; padding:10px 4px;
+  display:block; width:100%; text-align:center; cursor:default;
+  font:inherit; color:inherit;
+}
+/* An id beats the browser's own [hidden] rule, so bare would not be
+   bare. §4.6 — the space stands empty, and it has to actually be. */
+#cmverse[hidden]{ display:none; }
+#cmverse.live{ cursor:pointer; }
+#cmverse .cmv-t{
+  font-family:var(--serif); font-size:15.5px; line-height:1.6; color:var(--ink-soft);
+}
+#cmverse .cmv-r{
+  font-family:var(--mono); font-size:9px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--ink-faint); margin-top:8px;
+}
+#cmverse.live:hover .cmv-t{ color:var(--ink); }
 
 /* ── the greeting ───────────────────────── */
 #greet{
@@ -517,6 +589,10 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
   display:none; z-index:40;
 }
 .veil.open{ display:block; }
+/* When the verse is reached from the commit screen it has to stand
+   over it, or a man tapping his verse would watch it vanish. */
+.veil.over{ z-index:80; }
+.sheet.over{ z-index:81; }
 .sheet{
   position:fixed; left:0; right:0; bottom:0; z-index:41;
   background:var(--paper); border-top:1px solid var(--rule);
@@ -635,9 +711,50 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
     <textarea class="code" id="captext" style="font-family:var(--serif);font-size:16px"></textarea>
     <h3>A time, if it has one</h3>
     <input class="code" id="captime" placeholder="9:00" style="min-height:0;height:42px;font-size:14px;padding:0 12px">
+    <h3>Again</h3>
+    <p>If you already know it comes back. It waits on each day like any other thought — nothing plans itself.</p>
+    <button class="btn quiet" id="capagain">Once only</button>
     <div><button class="btn" id="capsave">Drop it there</button>
          <button class="btn quiet" id="capclose">Close</button></div>
     <p class="said" id="said8"></p>
+  </div>
+</div>
+
+<!-- Decision 54 — one sheet, reached from a written line or from
+     capture. Two doors, two states, one thing being set. -->
+<div class="sheet" id="rsheet">
+  <div class="sheet-in">
+    <h2>How often</h2>
+    <p id="rwhat" class="rwhat"></p>
+
+    <h3>It comes back</h3>
+    <select class="code" id="rkind" style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+      <option value="daily">Every day</option>
+      <option value="dow">On certain days of the week</option>
+      <option value="monthly">On the same date each month</option>
+    </select>
+
+    <div id="rdows" class="dowpick" hidden></div>
+
+    <div id="rdom" hidden>
+      <h3>Which date</h3>
+      <input class="code" id="rdomn" type="number" min="1" max="31" step="1"
+             style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+      <p style="font-size:13px;margin-top:8px">A date that does not exist in a month simply does not fall that month.</p>
+    </div>
+
+    <h3>Until</h3>
+    <select class="code" id="rend" style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+      <option value="never">Until I end it</option>
+      <option value="date">Until a date</option>
+    </select>
+    <input class="code" id="runtil" type="date" hidden
+           style="min-height:0;height:44px;font-size:15px;padding:0 12px;margin-top:8px">
+
+    <div><button class="btn" id="rsave">Keep it coming back</button>
+         <button class="btn quiet" id="rnever">Once only</button>
+         <button class="btn quiet" id="rclose">Close</button></div>
+    <p class="said" id="said10"></p>
   </div>
 </div>
 
@@ -656,6 +773,8 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
       <button class="cm-clock" id="cmclock" aria-label="Tap to pause"></button>
       <div class="plens" id="cmstretch"></div>
     </div>
+
+    <button id="cmverse" hidden></button>
 
     <button class="cm-x" id="cmx" aria-label="End">&#10005;</button>
   </div>
@@ -744,6 +863,13 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
     <p style="font-size:13px;margin-top:8px">Things written onto days ahead, before the gear is marked.</p>
     <div><button class="btn quiet" id="gasave">Save</button></div>
     <p class="said" id="said7"></p>
+
+    <!-- Decision 55 — however a rule was born, it is seen and ended
+         here. Two ways in must not mean two places to look. -->
+    <h3>Things that keep coming back</h3>
+    <p>Each one waits on its day to be taken in or thrown out. Nothing plans itself.</p>
+    <div id="rlist"></div>
+    <p class="said" id="said11"></p>
 
     <h3>Your verse when you open</h3>
     <p>Your own verse greets you when you open the app. It waits as long as you like and closes on a tap. Proverbs 3:5&ndash;6 stays over the gate either way.</p>
@@ -842,6 +968,8 @@ const $ = id => document.getElementById(id);
 function grow(el){ el.style.height='auto'; el.style.height=(el.scrollHeight)+'px'; }
 
 function render(){
+  paintKnows();
+  conjure(view);                // Decision 56 — the instance arrives when you do
   if(S.calClosed) calOpen = false;
   $('cal').classList.toggle('open', calOpen);
   $('datebtn').setAttribute('aria-expanded', String(calOpen));
@@ -882,10 +1010,7 @@ function render(){
 
     const cd = document.createElement('button');
     cd.className = 'act strong'; cd.textContent = 'Commit this day to God';
-    cd.onclick = () => openCommit('this day', () => {
-      const dd = day(view, true);
-      dd.pray = todayKey(); save(); render();
-    });
+    cd.onclick = () => openCommit('this day', { kind:'day', k:view });
     bar.appendChild(cd);
 
     if(day(view).pray){
@@ -919,6 +1044,16 @@ function capBlock(list, closed){
     const t = document.createElement('div');
     t.className = 'captext';
     t.textContent = c.t + ((c.time||'').trim() ? '  ·  ' + c.time.trim() : '');
+    /* Decision 64 — throw out means two different things. A captured
+       thought is gone for good; a repeating one only skips today. The
+       mark is the whole fix, and it shows only while the rule lives:
+       once ended, this is a capture like any other (Decision 62). */
+    if(c.rid && ruleById(c.rid)){
+      const m = document.createElement('span');
+      m.className = 'rec'; m.textContent = '↻';
+      m.title = 'Comes back — throwing it out skips today only';
+      t.appendChild(m);
+    }
     row.appendChild(t);
 
     if(!closed){
@@ -936,8 +1071,9 @@ function capBlock(list, closed){
       acts.appendChild(mk('to tasks','tasks'));
       acts.appendChild(mk('to prepare','prep'));
       const x = document.createElement('button');
-      x.className = 'capact drop'; x.textContent = 'discard';
-      x.onclick = () => dropCapture(view, c.id);
+      x.className = 'capact drop';
+      x.textContent = (c.rid && ruleById(c.rid)) ? 'not today' : 'discard';
+      x.onclick = () => dropCapture(view, c.id);   // Decision 63 — this day only
       acts.appendChild(x);
       row.appendChild(acts);
     }
@@ -975,8 +1111,24 @@ function listBlock(L, closed){
     if(closed) wrap.appendChild(noteFor(L, it));
   });
 
-  if(!closed) wrap.appendChild(adder(L));
+  if(!closed){
+    wrap.appendChild(adder(L));
+    wrap.appendChild(addBtn(L));      // Decision 57 — the same act, visible
+  }
   return wrap;
+}
+
+/* Enter is the fast path and stays. This is for the man who does not
+   know that, and §3 drew it under both lists from the first version. */
+function addBtn(L){
+  const b = document.createElement('button');
+  b.className = 'addbtn'; b.textContent = '+ add';
+  b.onclick = () => {
+    const el = document.querySelector('textarea[data-adder="' + L + '"]');
+    if(el && el.value.trim()){ el.dispatchEvent(new Event('addnow')); return; }
+    if(el) el.focus();                // empty: the gate meets you here
+  };
+  return b;
 }
 
 function itemRow(L, it, closed){
@@ -1027,12 +1179,9 @@ function itemRow(L, it, closed){
     meta.appendChild(c);
   } else if(!closed){
     const c = document.createElement('button');
-    c.className = 'mcommit'; c.textContent = 'commit';
+    c.className = 'mcommit'; c.textContent = 'commit to God';
     c.setAttribute('aria-label','Commit this to God');
-    c.onclick = () => openCommit(it.t || 'this', () => {
-      const cur = day(view, true)[L].find(x => x.id === it.id);
-      if(cur){ cur.pray = todayKey(); save(); render(); }
-    });
+    c.onclick = () => openCommit(it.t || 'this', { kind:'item', k:view, L, id:it.id });
     meta.appendChild(c);
   }
 
@@ -1041,6 +1190,20 @@ function itemRow(L, it, closed){
     r.className = 'mremind'; r.textContent = 'set a reminder';
     r.onclick = () => makeReminder(view, it);
     meta.appendChild(r);
+  }
+
+  /* Decision 54, the second door. A man does not declare a recurring
+     task — he notices one, on a line he has now written three mornings
+     running. So the mark sits here, where the realisation happens. */
+  if(!closed && (it.t||'').trim()){
+    const a = document.createElement('button');
+    a.className = 'mremind'; a.textContent = 'again…';
+    a.setAttribute('aria-label','Make this come back');
+    a.onclick = () => openRepeat(it.t.trim(), it.time || '', r => {
+      if(r) saveRule(r);          // "once only" simply walks away
+      closeRepeat(); render();
+    });
+    meta.appendChild(a);
   }
 
   if(meta.childElementCount) mid.appendChild(meta);
@@ -1088,6 +1251,7 @@ function adder(L){
   };
   ta.oninput = () => grow(ta);
   ta.onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); commit(); } };
+  ta.addEventListener('addnow', commit);      // the + add button, same act
   ta.onblur = commit;
   row.appendChild(ta);
   return row;
@@ -1312,6 +1476,102 @@ function dropCapture(k, id){
   if(i > -1){ d.caps.splice(i,1); save(); render(); }
 }
 
+/* ══ things that keep coming back — Decisions 54 to 56, 60 to 65 ══
+   A RULE is one sentence the app remembers. It is not a task and it
+   never appears on a day. An INSTANCE is what that sentence puts on a
+   day's doorstep when you arrive there. Neither is the other, and the
+   app must never let one become the other by itself. */
+
+function rules(){ if(!Array.isArray(S.rules)) S.rules = []; return S.rules; }
+function ruleById(id){ return rules().find(r => r.id === id) || null; }
+
+/* Decision 60. A date that does not exist in a month simply does not
+   fall that month — the 31st is absent in February and nothing is
+   invented, because inventing a 28th would be the app deciding what
+   you meant. getDate() never returns 31 in February, so this is free. */
+function ruleFalls(r, k){
+  if(!r) return false;
+  if(r.from && k < r.from) return false;
+  if(r.until && k > r.until) return false;
+  const d = dateOf(k);
+  if(r.kind === 'daily')   return true;
+  if(r.kind === 'dow')     return (r.dows||[]).includes(d.getDay());
+  if(r.kind === 'monthly') return d.getDate() === r.dom;
+  return false;
+}
+
+function ruleWords(r){
+  if(r.kind === 'daily') return 'every day';
+  if(r.kind === 'monthly') return 'the ' + r.dom + ordinal(r.dom) + ' of each month';
+  const ds = (r.dows||[]).slice().sort().map(i => DOW[i]);
+  return ds.length ? ds.join(' · ') : 'no days';
+}
+function ordinal(n){
+  if(n % 100 >= 11 && n % 100 <= 13) return 'th';
+  return ['th','st','nd','rd'][n % 10] || 'th';
+}
+
+/* Decision 56 — the rule is held once, and the instance is conjured on
+   arrival. Nothing is ever written onto a day that has not been
+   reached, so a rule can never dot the calendar or fill a day ahead. */
+function conjure(k){
+  if(isClosed(k)) return;              // never onto a closed day
+  const live = rules().filter(r => ruleFalls(r, k));
+  if(!live.length) return;
+  const d = day(k, true);
+  if(!Array.isArray(d.served)) d.served = [];
+  let added = false;
+  live.forEach(r => {
+    if(d.served.includes(r.id)) return;    // already offered here, once only
+    if(!d.caps) d.caps = [];
+    d.caps.push({ id:newId(), t:r.t, time:r.time||'', at:k, rid:r.id });
+    d.served.push(r.id);
+    added = true;
+  });
+  if(added) save();
+}
+
+/* Decision 65 — an unclaimed instance leaves no trace. §7.3 protects
+   what YOU wrote: a capture you made and never claimed was your own
+   act, so it stands on the closed day, honestly. A rule's offer you
+   never touched was never your act at all, so it goes and leaves
+   nothing. The closed day holds what you wrote and what you did with
+   it — never what the app put there on your behalf.
+   Also Decision 61: a rule whose date has passed ends itself and
+   leaves the list. Nothing in this product keeps a graveyard. */
+function sweepRules(){
+  const t = todayKey();
+  let touched = false;
+
+  const keep = rules().filter(r => !(r.until && r.until < t));
+  if(keep.length !== rules().length){ S.rules = keep; touched = true; }
+
+  Object.keys(S.days || {}).forEach(k => {
+    if(k >= t) return;                        // only closed days are swept
+    const d = S.days[k];
+    if(Array.isArray(d.caps)){
+      const left = d.caps.filter(c => !c.rid);
+      if(left.length !== d.caps.length){ d.caps = left; touched = true; }
+    }
+    if(d.served){ delete d.served; touched = true; }
+  });
+  if(touched) save();
+}
+
+/* Decision 62 — ending a rule reaches forward only. An instance already
+   sitting on a day you have opened is a capture like any other, and the
+   rule has no further claim on it. Claim it or throw it out yourself. */
+function endRule(id){
+  S.rules = rules().filter(r => r.id !== id);
+  save(); paintRules(); render();
+}
+
+function saveRule(spec){
+  const r = Object.assign({ id:newId(), from:todayKey() }, spec);
+  rules().push(r); save();
+  return r;
+}
+
 /* ══ commit — prayer over the work ════════════════════════
    Proverbs 16:3. The timer is DrawNigh's, unchanged.
    The mark is a record and is never counted anywhere. */
@@ -1319,7 +1579,11 @@ function dropCapture(k, id){
 const PRAY_LENGTHS  = [30, 60, 120, 180, 300, 600, 900];
 const PRAY_STRETCH  = [30, 60, 120, 300];
 
-let pray = null;   // { secs, left, paused, tick, what, onEnd }
+/* Decision 50 — the clock is the wall clock, never a count of ticks.
+   A phone that sleeps stops handing out ticks, and a prayer measured
+   in ticks would quietly stop with it — failing at the one moment it
+   works best: a man who put the phone down in order to pray. */
+let pray = null;   // { secs, endAt, left, paused, tick, what, target, chimeAt }
 
 function prayLabel(s){
   if(s < 60) return s + ' sec';
@@ -1327,75 +1591,276 @@ function prayLabel(s){
   return m + ' min';
 }
 
-function chime(){
+/* ── the chime — Decisions 48 and 53 ──────
+   The old one opened a fresh audio context at the instant it fired,
+   minutes after the last tap, and a browser will not let sound in
+   without a recent hand on the screen. It opened suspended and died
+   silent. Now: one context, opened by the very tap that chooses the
+   length, kept awake by a loop of near-silence, and the bell booked
+   ahead on the audio clock so it can sound with the screen out.
+   If the phone suspends it anyway, the prayer notices on return and
+   rings then. It never rings twice. */
+
+let prayAC = null, praySilence = null, prayChimeNode = null;
+
+function audioWake(){
   try{
     const C = window.AudioContext || window.webkitAudioContext;
-    if(!C) return;
-    const ac = new C();
-    const o = ac.createOscillator(), g = ac.createGain();
-    o.type = 'sine'; o.frequency.value = 880;
-    g.gain.setValueAtTime(0.0001, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.16, ac.currentTime + 0.05);
-    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.9);
-    o.connect(g); g.connect(ac.destination);
-    o.start(); o.stop(ac.currentTime + 0.95);
-    setTimeout(() => { try{ ac.close(); }catch(e){} }, 1400);
-  }catch(e){}
+    if(!C) return null;
+    if(!prayAC || prayAC.state === 'closed') prayAC = new C();
+    if(prayAC.state === 'suspended') prayAC.resume();
+    if(!praySilence){
+      const buf = prayAC.createBuffer(1, prayAC.sampleRate, prayAC.sampleRate);
+      praySilence = prayAC.createBufferSource();
+      praySilence.buffer = buf; praySilence.loop = true;
+      const g = prayAC.createGain(); g.gain.value = 0.0008;
+      praySilence.connect(g); g.connect(prayAC.destination);
+      praySilence.start();
+    }
+    return prayAC;
+  }catch(e){ return null; }
 }
 
-function openCommit(what, onDone){
+function audioSleep(){
+  cancelChime();
+  try{ if(praySilence){ praySilence.stop(); praySilence.disconnect(); } }catch(e){}
+  praySilence = null;
+}
+
+function cancelChime(){
+  try{ if(prayChimeNode){ prayChimeNode.stop(0); prayChimeNode.disconnect(); } }catch(e){}
+  prayChimeNode = null;
+}
+
+function bellAt(ac, at){
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = 'sine'; o.frequency.value = 880;
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(0.16, at + 0.05);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.9);
+  o.connect(g); g.connect(ac.destination);
+  o.start(at); o.stop(at + 0.95);
+  return o;
+}
+
+/* Book the bell for `inSecs` from now. Called again whenever the end
+   moves — a stretch, a pause, a resume. */
+function bookChime(inSecs){
+  cancelChime();
+  const ac = audioWake();
+  if(!ac || !pray) return;
+  const at = ac.currentTime + Math.max(0, inSecs);
+  try{ prayChimeNode = bellAt(ac, at); }catch(e){ prayChimeNode = null; }
+  pray.chimeAt = at;
+}
+
+function chime(){                       // rings now
+  const ac = audioWake();
+  if(!ac) return;
+  try{ bellAt(ac, ac.currentTime + 0.02); }catch(e){}
+}
+
+/* Decision 52 \u2014 the mark carries the moment the prayer ENDED, not the
+   moment you next looked. A prayer running out at 11:58pm and found on
+   Wednesday morning must mark Tuesday, or the closed-day record \u2014 the
+   mark's whole prize, \u00a710.4 \u2014 is filed against the wrong day.
+   A target is a plain description, never a closure, because Decision 51
+   means it has to survive being written down and read back. */
+function applyCommit(target, whenKey){
+  if(!target) return;
+  if(target.kind === 'day'){
+    day(target.k, true).pray = whenKey;
+  } else if(target.kind === 'item'){
+    const cur = (day(target.k, true)[target.L] || []).find(x => x.id === target.id);
+    if(!cur) return;
+    cur.pray = whenKey;
+  }
+  S.knows = true;                 // Decision 49 \u2014 loud once, quiet thereafter
+  save(); paintKnows(); render();
+}
+
+function paintKnows(){ document.body.classList.toggle('knows', !!S.knows); }
+
+/* Decision 58 \u2014 your verse stands under the clock, on both commit
+   screens. Bare when none is chosen: the same blank page as \u00a74.6. */
+function paintCmVerse(live){
+  const g = gateCfg(), el = $('cmverse');
+  const t = (g.verse||'').trim();
+  if(!t){ el.hidden = true; el.classList.remove('live'); return; }
+  el.hidden = false;
+  el.innerHTML = '';
+  const p = document.createElement('div');
+  p.className = 'cmv-t'; p.textContent = t;
+  el.appendChild(p);
+  if((g.ref||'').trim()){
+    const r = document.createElement('div');
+    r.className = 'cmv-r'; r.textContent = g.ref.trim();
+    el.appendChild(r);
+  }
+  el.classList.toggle('live', !!live);
+  el.setAttribute('aria-label', live ? 'Change your verse' : 'Your verse');
+}
+
+function openCommit(what, target){
   $('cmwhat').textContent = what;
   const box = $('cmlengths');
   box.innerHTML = '';
   PRAY_LENGTHS.forEach(s => {
     const b = document.createElement('button');
     b.className = 'plen'; b.textContent = prayLabel(s);
-    b.onclick = () => { $('cmpick').hidden = true; startPray(s, what, onDone); };
+    b.onclick = () => { $('cmpick').hidden = true; startPray(s, what, target); };
     box.appendChild(b);
   });
   $('cmpick').hidden = false;
   $('cmrun').hidden = true;
+  paintCmVerse(true);              // Decision 59 \u2014 changeable while choosing
   $('commit').classList.add('up');
 }
 
-function closeCommit(){
+function closeCommit(){            // \u2715 \u2014 instantly, and in silence
   if(pray && pray.tick) clearInterval(pray.tick);
   pray = null;
+  S.pray = null; save();
+  audioSleep();
   $('commit').classList.remove('up');
+}
+
+/* Seconds still to run, read off the wall clock. */
+function prayLeft(){
+  if(!pray) return 0;
+  if(pray.paused) return pray.left;
+  return Math.max(0, Math.ceil((pray.endAt - Date.now()) / 1000));
 }
 
 function paintPray(){
   if(!pray) return;
-  const m = Math.floor(pray.left/60), s = pray.left%60;
+  const left = prayLeft();
+  const m = Math.floor(left/60), s = left%60;
   $('cmclock').textContent = pray.paused ? '\u2759\u2759 Paused'
                            : (m ? m + ':' + String(s).padStart(2,'0') : s + '');
 }
 
-function startPray(secs, what, onDone){
-  pray = { secs, left:secs, paused:false, tick:null, what, onDone };
+/* Decision 51 \u2014 a prayer survives the app being closed. Its end is
+   written down with everything else, on the device. */
+function keepPray(){
+  if(!pray){ S.pray = null; }
+  else S.pray = { endAt:pray.endAt, left:pray.left, paused:pray.paused,
+                  secs:pray.secs, what:pray.what, target:pray.target };
+  save();
+}
+
+function endPray(){
+  if(!pray) return;
+  clearInterval(pray.tick);
+  /* Ring only if the booked bell did not. The audio clock stands still
+     while a phone has the context suspended, so if it has not reached
+     the booked moment, nothing sounded and it falls to here. */
+  const ac = prayAC;
+  const rang = ac && typeof pray.chimeAt === 'number'
+            && ac.currentTime >= pray.chimeAt - 0.25;
+  if(!rang){ cancelChime(); chime(); }
+  const target = pray.target, ended = pray.endAt;
+  pray = null; S.pray = null;
+  setTimeout(audioSleep, 1200);          // let the bell finish
+  $('commit').classList.remove('up');
+  applyCommit(target, keyOf(new Date(ended)));
+}
+
+function prayTick(){
+  if(!pray || pray.paused) return;
+  if(prayLeft() <= 0) endPray(); else paintPray();
+}
+
+function startPray(secs, what, target){
+  audioWake();                     // this tap is the hand that opens sound
+  pray = { secs, endAt: Date.now() + secs*1000, left:secs, paused:false,
+           tick:null, what, target, chimeAt:null };
+  runPray();
+  bookChime(secs);
+  keepPray();
+}
+
+/* Paint and drive whatever prayer is in `pray` \u2014 used both when one
+   starts and when one is found still running after the app reopens. */
+function runPray(){
+  $('cmwhat').textContent = pray.what;
+  $('cmpick').hidden = true;
   $('cmrun').hidden = false;
+  paintCmVerse(false);             // fixed once the clock is running
   const box = $('cmstretch');
   box.innerHTML = '';
   PRAY_STRETCH.forEach(s => {
     const b = document.createElement('button');
     b.className = 'plen quiet'; b.textContent = '+' + prayLabel(s);
-    b.onclick = () => { pray.left += s; paintPray(); };   // works while paused
+    b.onclick = () => {                                   // works while paused
+      if(!pray) return;
+      if(pray.paused) pray.left += s;
+      else { pray.endAt += s*1000; bookChime(prayLeft()); }
+      paintPray(); keepPray();
+    };
     box.appendChild(b);
   });
   paintPray();
-  pray.tick = setInterval(() => {
-    if(!pray || pray.paused) return;
-    pray.left--;
-    if(pray.left <= 0){
-      clearInterval(pray.tick);
-      chime();
-      const done = pray.onDone;
-      pray = null;
-      $('commit').classList.remove('up');
-      if(typeof done === 'function') done();
-    } else paintPray();
-  }, 1000);
+  $('commit').classList.add('up');
+  if(pray.tick) clearInterval(pray.tick);
+  pray.tick = setInterval(prayTick, 500);
+  armChime();
 }
+
+/* A prayer found still running after the app reopens has no bell
+   booked, because a browser only lets sound in through a hand and
+   there has been none since it started. So the bell is booked on the
+   first touch after the app comes back — a tap anywhere will do, and
+   until then the prayer still rings on return by the other path. */
+function armChime(){
+  if(!pray || typeof pray.chimeAt === 'number') return;
+  const arm = () => {
+    document.removeEventListener('pointerdown', arm, true);
+    document.removeEventListener('keydown', arm, true);
+    /* Let the tap be handled first. If it was ✕, the prayer is over and
+       there is nothing to book — a bell must never be laid down by the
+       very touch that ended the prayer in silence. */
+    setTimeout(() => {
+      if(pray && !pray.paused && typeof pray.chimeAt !== 'number') bookChime(prayLeft());
+    }, 0);
+  };
+  document.addEventListener('pointerdown', arm, true);
+  document.addEventListener('keydown', arm, true);
+}
+
+function prayPause(){
+  if(!pray) return;
+  if(pray.paused){
+    pray.paused = false;
+    pray.endAt = Date.now() + pray.left*1000;
+    bookChime(pray.left);
+  } else {
+    pray.left = prayLeft();
+    pray.paused = true;
+    cancelChime();
+  }
+  paintPray(); keepPray();
+}
+
+/* Opening the app again. Inside the window you are put back into the
+   prayer, the count still running; past it, the prayer completed while
+   nobody was looking and is filed against the day it ended on. */
+function resumePray(){
+  const p = S.pray;
+  if(!p || typeof p.endAt !== 'number') return;
+  pray = { secs:p.secs, endAt:p.endAt, left:p.left, paused:!!p.paused,
+           tick:null, what:p.what, target:p.target, chimeAt:null };
+  if(!pray.paused && prayLeft() <= 0){ endPray(); return; }
+  runPray();                       // no chime booked: sound needs a hand first
+}
+
+/* Back from a dark screen \u2014 the context may have been put to sleep,
+   and the prayer may have run out while nobody was looking. */
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState !== 'visible' || !pray) return;
+  try{ if(prayAC && prayAC.state === 'suspended') prayAC.resume(); }catch(e){}
+  prayTick();
+});
 
 /* ══ the Gate ═════════════════════════════════════════════
    Stands before a day nothing is written on. Never before a
@@ -1663,6 +2128,7 @@ function setChosen(text, ref){
   const g = gateCfg();
   g.verse = text || ''; g.ref = ref || '';
   save(); paintChosen();
+  paintCmVerse(!pray);       // one verse — the gate, the greeting and the timer
 }
 function paintChosen(){
   const g = gateCfg();
@@ -1789,13 +2255,31 @@ async function runFind(){
 }
 
 /* ── capture ────────────────────────────── */
+let capRule = null;          // Decision 54, the first door — set up front
+
 function openCapture(){
   const d = dateOf(view); d.setDate(d.getDate()+1);
   $('capdate').value = keyOf(d);
   $('captext').value = ''; $('captime').value = '';
+  capRule = null; $('capagain').textContent = 'Once only';
   $('capsheet').classList.add('open');
   $('veil').classList.add('open');
 }
+
+/* The doctor has just said one tablet every morning from Thursday.
+   Nothing is written yet, and he already knows it repeats. */
+$('capagain').onclick = () => {
+  const t = $('captext').value.trim();
+  if(!t){ say('said8','Write the thought first'); return; }
+  $('capsheet').classList.remove('open');       // one sheet at a time
+  openRepeat(t, $('captime').value.trim(), spec => {
+    capRule = spec;
+    $('capagain').textContent = spec ? ruleWords(spec) : 'Once only';
+    closeRepeat();
+    $('capsheet').classList.add('open');
+    $('veil').classList.add('open');
+  });
+};
 function closeCapture(){
   $('capsheet').classList.remove('open');
   $('veil').classList.remove('open');
@@ -1805,13 +2289,132 @@ $('capsave').onclick = () => {
   const k = $('capdate').value, t = $('captext').value.trim();
   if(!k){ say('said8','Pick a day'); return; }
   if(!t){ say('said8','Write the thought'); return; }
-  addCapture(k, t, $('captime').value.trim());
+  const time = $('captime').value.trim();
+  if(capRule){
+    /* The rule starts on the day named, and conjures its own instance
+       when that day is reached — no capture is dropped by hand, or the
+       first day would carry two. Decision 56. */
+    saveRule(Object.assign({}, capRule, { t, time, from:k }));
+  } else {
+    addCapture(k, t, time);
+  }
+  capRule = null;
   closeCapture(); render();
 };
 
+/* ── things that keep coming back ───────── */
+let repeatDone = null;          // what to do with the rule once it is described
+
+function paintRepeatShape(){
+  const kind = $('rkind').value;
+  $('rdows').hidden = kind !== 'dow';
+  $('rdom').hidden  = kind !== 'monthly';
+  $('runtil').hidden = $('rend').value !== 'date';
+}
+
+function openRepeat(text, time, done){
+  repeatDone = done;
+  $('rwhat').textContent = text;
+  $('rsheet').dataset.t = text;
+  $('rsheet').dataset.time = time || '';
+
+  $('rkind').value = 'daily';
+  $('rend').value  = 'never';
+  $('runtil').value = '';
+  $('rdomn').value = dateOf(view).getDate();
+
+  const box = $('rdows');
+  box.innerHTML = '';
+  DOW.forEach((d,i) => {
+    const b = document.createElement('button');
+    b.className = 'dowb'; b.textContent = d; b.dataset.i = i;
+    b.onclick = () => b.classList.toggle('on');
+    box.appendChild(b);
+  });
+  paintRepeatShape();
+
+  $('rsheet').classList.add('open');
+  $('veil').classList.add('open');
+}
+function closeRepeat(){
+  $('rsheet').classList.remove('open');
+  $('veil').classList.remove('open');
+  repeatDone = null;
+}
+$('rkind').onchange = paintRepeatShape;
+$('rend').onchange  = paintRepeatShape;
+$('rclose').onclick = closeRepeat;
+$('rnever').onclick = () => { if(repeatDone) repeatDone(null); else closeRepeat(); };
+
+$('rsave').onclick = () => {
+  const kind = $('rkind').value;
+  const spec = {
+    t: $('rsheet').dataset.t,
+    time: $('rsheet').dataset.time || '',
+    kind
+  };
+  if(kind === 'dow'){
+    spec.dows = [...document.querySelectorAll('#rdows .dowb.on')].map(b => +b.dataset.i);
+    if(!spec.dows.length){ say('said10','Pick at least one day'); return; }
+  }
+  if(kind === 'monthly'){
+    const n = parseInt($('rdomn').value, 10);
+    if(!(n >= 1 && n <= 31)){ say('said10','Pick a date from 1 to 31'); return; }
+    spec.dom = n;
+  }
+  if($('rend').value === 'date'){
+    const u = $('runtil').value;
+    if(!u){ say('said10','Pick the last day'); return; }
+    spec.until = u;
+  }
+  if(repeatDone) repeatDone(spec);
+};
+
+/* Decision 55 — one list, wherever the rule was born. */
+function paintRules(){
+  const box = $('rlist');
+  if(!box) return;
+  box.innerHTML = '';
+  const rs = rules();
+  if(!rs.length){
+    const p = document.createElement('p');
+    p.className = 'rnone'; p.textContent = 'Nothing yet.';
+    box.appendChild(p);
+    return;
+  }
+  rs.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'rrow';
+
+    const t = document.createElement('div');
+    t.className = 'rt'; t.textContent = r.t;
+    row.appendChild(t);
+
+    const w = document.createElement('div');
+    w.className = 'rw';
+    w.textContent = ruleWords(r) + (r.until ? ' · to ' + shortStamp(r.until) : '');
+    row.appendChild(w);
+
+    const x = document.createElement('button');
+    x.className = 'rend'; x.textContent = 'end it';
+    x.onclick = () => { endRule(r.id); say('said11','Ended'); };
+    row.appendChild(x);
+
+    box.appendChild(row);
+  });
+}
+
 /* ── commit ─────────────────────────────── */
 $('cmx').onclick = closeCommit;          // ends instantly and silently
-$('cmclock').onclick = () => { if(pray){ pray.paused = !pray.paused; paintPray(); } };
+$('cmclock').onclick = prayPause;
+
+/* Decision 59 — the verse is reachable from here, so the one that
+   called you at eleven can be the one you pray the day with. §10.1:
+   a man hiding for three minutes does not navigate a menu. */
+$('cmverse').onclick = () => {
+  if(!$('cmverse').classList.contains('live')) return;   // fixed once running
+  openGateSheet(true, true);
+};
 
 /* ── the greeting ───────────────────────── */
 function greetDue(){
@@ -1851,9 +2454,12 @@ $('datebtn').onclick = () => {
 $('mprev').onclick = () => { calMonth.setMonth(calMonth.getMonth()-1); renderCal(); };
 $('mnext').onclick = () => { calMonth.setMonth(calMonth.getMonth()+1); renderCal(); };
 
-function openGateSheet(on){
+function openGateSheet(on, over){
   $('gsheet').classList.toggle('open', on);
   $('veil').classList.toggle('open', on);
+  $('gsheet').classList.toggle('over', on && !!over);
+  $('veil').classList.toggle('over', on && !!over);
+  if(!on) paintCmVerse(!pray);        // the verse may have just changed
   if(on){
     const g = gateCfg();
     $('gsecs').value = g.secs;
@@ -1862,6 +2468,7 @@ function openGateSheet(on){
     $('gahead').value = keepCfg().ahead;
     $('ggreet').value = S.greet === undefined ? 'daily' : S.greet;
     fillCode();
+    paintRules();
     paintDot();
   }
 }
@@ -1888,7 +2495,7 @@ $('gsave').onclick = () => {
 };
 $('gvclear').onclick = () => { setChosen('',''); say('said4','Left bare'); };
 
-$('veil').onclick    = () => { openGateSheet(false); closeCapture(); };
+$('veil').onclick    = () => { openGateSheet(false); closeCapture(); closeRepeat(); };
 $('makebtn').onclick = fillCode;
 
 $('copybtn').onclick = async () => {
@@ -1933,6 +2540,7 @@ setInterval(() => {
   if(t !== lastToday){
     lastToday = t;
     prepFirst = false;          // a new day opens with Tasks on top
+    sweepRules();               // Decision 65 — an unclaimed offer leaves nothing
     if(view < t) { /* the day just closed under you — stay put, now read-only */ }
     render();
   }
@@ -1941,7 +2549,7 @@ setInterval(() => {
 document.addEventListener('visibilitychange', () => {
   if(!document.hidden){
     const t = todayKey();
-    if(t !== lastToday){ lastToday = t; prepFirst = false; }
+    if(t !== lastToday){ lastToday = t; prepFirst = false; sweepRules(); }
     render();
   }
 });
@@ -1978,6 +2586,8 @@ function askFirstRun(){
 }
 
 load();
+sweepRules();          // Decision 65, and Decision 61's rules that have run out
+resumePray();          // Decision 51 — a prayer survives the app being closed
 
 if(!keepCfg().asked && !Object.keys(S.days || {}).length){
   gateBusy = true;                 // the gate waits until this is answered
