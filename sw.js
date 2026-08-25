@@ -2,8 +2,11 @@
    Caches the page so it opens with no connection.
    It never touches your days: those live in localStorage, which a
    service worker cannot read, write or send. */
-const CACHE = 'oms-v1';
+const CACHE = 'oms-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+/* The KJV is cached on first use rather than at install, so the app
+   still opens instantly on a slow connection. Once fetched it is
+   kept, and the verse finder works with no connection ever again. */
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

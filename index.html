@@ -75,7 +75,7 @@ header{ padding-top:calc(22px + env(safe-area-inset-top)); }
 }
 .daynum{
   font-family:var(--serif); font-size:29px; line-height:1.05;
-  letter-spacing:-.015em; display:block;
+  letter-spacing:-.015em; display:inline-block; vertical-align:middle;
 }
 .daynum .yr{ color:var(--ink-faint); }
 
@@ -89,7 +89,7 @@ header{ padding-top:calc(22px + env(safe-area-inset-top)); }
 hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
 
 /* ── the two blocks ─────────────────────── */
-#blocks{ margin-top:26px; }
+#blocks{ margin-top:22px; }
 
 .block{ margin-bottom:8px; }
 .block + .block{ margin-top:32px; }
@@ -197,6 +197,7 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
   text-transform:uppercase; color:var(--ink-soft);
 }
 .grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:1px; }
+.cal{ padding-bottom:2px; }
 .dow{
   font-family:var(--mono); font-size:9px; letter-spacing:.1em;
   text-transform:uppercase; color:var(--ink-faint);
@@ -204,8 +205,8 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
 }
 .cell{
   border:0; background:none; cursor:pointer;
-  aspect-ratio:1/1; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:3px;
+  height:40px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
   font-family:var(--mono); font-size:12.5px; color:var(--ink-soft);
   border-radius:3px; padding:0;
 }
@@ -222,7 +223,7 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
 .callegend{
   font-family:var(--mono); font-size:9px; letter-spacing:.1em;
   text-transform:uppercase; color:var(--ink-faint);
-  margin-top:12px; display:flex; gap:16px;
+  margin-top:10px; display:flex; gap:16px;
 }
 .callegend b{ font-weight:400; }
 .callegend i{ display:inline-block; width:4px; height:4px; border-radius:50%; margin-right:5px; transform:translateY(-1px); }
@@ -260,8 +261,241 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
   font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
   text-transform:uppercase; color:var(--ink-faint);
 }
+/* The count sits at the foot of the gate, deliberately far from the
+   verse and deliberately quiet — there when looked for, not when not. */
+.gate-foot{
+  position:absolute; left:0; right:0;
+  bottom:calc(30px + env(safe-area-inset-bottom));
+  display:flex; flex-direction:column; align-items:center; gap:11px;
+}
+.gate-line{
+  width:96px; height:1.5px; background:var(--rule-soft);
+  border-radius:2px; overflow:hidden;
+}
+.gate-line i{
+  display:block; width:100%; height:100%;
+  background:var(--ink-faint); transform-origin:left center;
+  transition:transform 1s linear;
+}
+.gate-count{
+  font-family:var(--mono); font-size:11px; letter-spacing:.24em;
+  color:var(--ink-faint);
+}
 @media (prefers-reduced-motion: reduce){
   #gate{ transition:none; }
+}
+
+/* ── the gear ───────────────────────────── */
+.topbar{ display:flex; justify-content:flex-end; margin-bottom:6px; }
+.gear{
+  position:relative; border:0; background:none; cursor:pointer;
+  padding:6px; color:var(--ink-faint); line-height:0;
+}
+.gear:hover{ color:var(--ink); }
+.gdot{
+  position:absolute; top:3px; right:3px;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--red); box-shadow:0 0 0 2.5px var(--paper);
+}
+.duenote{
+  font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--red); margin:0 0 10px !important;
+}
+.calmark{
+  display:inline-block; margin-left:10px; color:var(--ink-faint);
+  vertical-align:middle; line-height:0;
+}
+.datebtn:hover .calmark{ color:var(--ink-soft); }
+
+.frbtn{
+  display:block; width:100%; text-align:left; margin:0 0 8px;
+  border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:6px; padding:13px 15px;
+  font-family:var(--serif); font-size:16px; color:var(--ink);
+}
+.frbtn:hover{ border-color:var(--ink-soft); }
+.frbtn b{ font-weight:400; }
+.frbtn i{
+  display:block; font-style:normal; margin-top:2px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+
+
+/* ── the action bar ─────────────────────── */
+.actions{ margin-top:34px; padding-top:18px; border-top:1px solid var(--rule-soft); }
+.act{
+  display:block; width:100%; text-align:left; margin-bottom:8px;
+  border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:6px; padding:12px 15px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-soft);
+}
+.act:hover{ border-color:var(--ink-soft); color:var(--ink); }
+.act.strong{ color:var(--red); border-color:rgba(140,47,57,.3); }
+.act.strong:hover{ border-color:var(--red); }
+.daypray{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--red-soft); margin-top:10px;
+}
+
+/* ── captures waiting on a day ──────────── */
+.capblock{ margin-bottom:30px; padding-bottom:20px; border-bottom:1px dashed var(--rule); }
+.capblock h2{
+  font-family:var(--mono); font-size:10.5px; font-weight:400;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-faint); margin:0 0 14px;
+}
+.caprow{ margin-bottom:14px; }
+.captext{ font-family:var(--serif); font-size:16.5px; color:var(--ink-soft); }
+.capacts{ display:flex; gap:14px; margin-top:5px; }
+.capact{
+  border:0; background:none; cursor:pointer; padding:2px 0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.capact:hover{ color:var(--ink); }
+.capact.drop:hover{ color:var(--red); }
+
+/* ── a line's time and its committed mark ── */
+.mid{ flex:1; }
+.meta{ display:flex; align-items:center; gap:13px; margin:-2px 0 4px; flex-wrap:wrap; }
+.mtime{
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+  color:var(--ink-soft);
+}
+.mpray{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--red-soft);
+}
+.mremind{
+  border:0; background:none; cursor:pointer; padding:0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.mremind:hover{ color:var(--ink); }
+.mcommit{
+  border:0; background:none; cursor:pointer; padding:0;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--rule);
+}
+.mcommit:hover{ color:var(--red); }
+
+/* ── commit ─────────────────────────────── */
+#commit{
+  position:fixed; inset:0; z-index:70; background:var(--paper);
+  display:none; align-items:center; justify-content:center;
+  padding:36px 30px; text-align:center;
+}
+#commit.up{ display:flex; }
+.cm-in{ max-width:400px; width:100%; }
+.cm-verse{
+  font-family:var(--serif); font-size:18px; line-height:1.6;
+  color:var(--ink); margin:0;
+}
+.cm-ref{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-faint); margin-top:11px;
+}
+.cm-what{
+  font-family:var(--serif); font-style:italic; font-size:16px;
+  color:var(--red); margin:34px 0 30px; line-height:1.45;
+}
+.cm-label{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--ink-faint); margin-bottom:12px;
+}
+.plens{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.plen{
+  border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:999px; padding:9px 15px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+  color:var(--ink);
+}
+.plen:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.plen.quiet{ color:var(--ink-faint); }
+.cm-clock{
+  display:block; margin:0 auto 26px; border:0; background:none; cursor:pointer;
+  font-family:var(--mono); font-size:38px; letter-spacing:.06em; color:var(--ink);
+  padding:14px 20px;
+}
+.cm-x{
+  position:absolute; bottom:calc(34px + env(safe-area-inset-bottom));
+  left:50%; transform:translateX(-50%);
+  border:0; background:none; cursor:pointer;
+  font-family:var(--mono); font-size:15px; color:var(--ink-faint); padding:8px 16px;
+}
+.cm-x:hover{ color:var(--ink); }
+
+/* ── the greeting ───────────────────────── */
+#greet{
+  position:fixed; inset:0; z-index:65; background:var(--paper);
+  display:none; align-items:center; justify-content:center;
+  padding:36px 30px; text-align:center;
+}
+#greet.up{ display:flex; }
+.greet-in{ max-width:400px; width:100%; }
+.greet-x{
+  position:absolute; bottom:calc(34px + env(safe-area-inset-bottom));
+  left:50%; transform:translateX(-50%);
+  border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:999px; padding:9px 20px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-soft);
+}
+.greet-x:hover{ border-color:var(--ink-soft); color:var(--ink); }
+
+
+/* ── choosing a verse ───────────────────── */
+.chosen{
+  border-left:2px solid rgba(140,47,57,.3); padding:2px 0 2px 13px; margin-bottom:18px;
+}
+.chosen-t{
+  font-family:var(--serif); font-style:italic; font-size:15.5px;
+  color:var(--ink); line-height:1.5; margin:0 !important;
+}
+.chosen-r{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--red-soft); margin-top:6px;
+}
+.ftabs{ display:flex; gap:22px; margin-bottom:14px; }
+.ftab{
+  border:0; background:none; cursor:pointer; padding:0 0 5px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-faint);
+  border-bottom:1.5px solid transparent;
+}
+.ftab.on{ color:var(--ink); border-bottom-color:var(--ink-soft); }
+.picker{ display:flex; gap:7px; }
+.pick{
+  flex:1; height:44px; border:1px solid var(--rule); border-radius:4px;
+  background:rgba(255,255,255,.42); color:var(--ink);
+  font-family:var(--serif); font-size:15px; padding:0 8px;
+}
+.pick.narrow{ flex:0 0 78px; font-family:var(--mono); font-size:13px; }
+.pick:focus{ outline:none; border-color:var(--ink-soft); }
+.preview{
+  font-family:var(--serif) !important; font-style:italic;
+  font-size:15px !important; color:var(--ink) !important;
+  line-height:1.5 !important; margin:14px 0 4px !important; min-height:22px;
+}
+.hits{ margin-top:12px; max-height:300px; overflow-y:auto; }
+.hit{
+  display:block; width:100%; text-align:left; margin-bottom:6px;
+  border:0; border-bottom:1px solid var(--rule-soft); background:none; cursor:pointer;
+  padding:9px 0; color:var(--ink);
+}
+.hit:hover{ background:rgba(255,255,255,.35); }
+.hit b{
+  display:block; font-family:var(--mono); font-size:9px; font-weight:400;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
+  margin-bottom:4px;
+}
+.hit span{ font-family:var(--serif); font-size:14.5px; line-height:1.45; }
+.hit mark{ background:none; color:var(--red); }
+.hitnote{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint); padding:6px 0;
 }
 
 /* ── footer / keep ──────────────────────── */
@@ -331,11 +565,27 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
 
 <div class="wrap">
   <header>
+    <div class="topbar">
+      <button class="gear" id="gearbtn" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3.1"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z"></path>
+        </svg>
+        <span class="gdot" id="gdot" hidden></span>
+      </button>
+    </div>
+
     <div class="datebar">
       <button class="arrow" id="prev" aria-label="Previous day">&larr;</button>
       <button class="datebtn" id="datebtn" aria-expanded="false">
         <span class="weekday" id="wd">—</span>
         <span class="daynum" id="dn">—</span>
+        <span class="calmark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <rect x="3" y="5" width="18" height="16" rx="2.5"></rect>
+            <path d="M3 10h18M8 3v4M16 3v4"></path>
+          </svg>
+        </span>
       </button>
       <button class="arrow" id="next" aria-label="Next day">&rarr;</button>
     </div>
@@ -360,10 +610,63 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
   <main id="blocks"></main>
 
   <footer>
-    <button class="footlink" id="keepbtn">Keep &amp; restore</button>
-    <button class="footlink" id="gatebtn" style="margin-left:22px">The gate</button>
     <p class="verse">&ldquo;Order my steps in thy word.&rdquo; &mdash; Psalm 119:133</p>
   </footer>
+</div>
+
+<div class="sheet" id="firstrun">
+  <div class="sheet-in">
+    <h2>One thing before you start</h2>
+    <p>Everything you write stays on this phone. Nothing is sent anywhere and nothing can be recovered for you — so keeping a copy is the one habit this asks of you.</p>
+    <p>What matters most is what you write onto days that have not happened yet. A past day lost is a day already lived; a lost Thursday is a Thursday you walk into blind.</p>
+    <h3>Remind me after this many things written ahead</h3>
+    <div id="frchoices"></div>
+    <p class="said" id="said6"></p>
+  </div>
+</div>
+
+<div class="sheet" id="capsheet">
+  <div class="sheet-in">
+    <h2>Capture a thought or task</h2>
+    <p>For another day. It waits there without becoming a plan — when that day comes you decide whether to take it in.</p>
+    <h3>The day</h3>
+    <input class="code" id="capdate" type="date" style="min-height:0;height:46px;font-size:15px;padding:0 12px">
+    <h3>The thought</h3>
+    <textarea class="code" id="captext" style="font-family:var(--serif);font-size:16px"></textarea>
+    <h3>A time, if it has one</h3>
+    <input class="code" id="captime" placeholder="9:00" style="min-height:0;height:42px;font-size:14px;padding:0 12px">
+    <div><button class="btn" id="capsave">Drop it there</button>
+         <button class="btn quiet" id="capclose">Close</button></div>
+    <p class="said" id="said8"></p>
+  </div>
+</div>
+
+<div id="commit">
+  <div class="cm-in">
+    <p class="cm-verse">Commit thy works unto the LORD, and thy thoughts shall be established.</p>
+    <div class="cm-ref">Proverbs 16:3</div>
+    <p class="cm-what" id="cmwhat"></p>
+
+    <div id="cmpick">
+      <div class="cm-label">How long</div>
+      <div class="plens" id="cmlengths"></div>
+    </div>
+
+    <div id="cmrun" hidden>
+      <button class="cm-clock" id="cmclock" aria-label="Tap to pause"></button>
+      <div class="plens" id="cmstretch"></div>
+    </div>
+
+    <button class="cm-x" id="cmx" aria-label="End">&#10005;</button>
+  </div>
+</div>
+
+<div id="greet">
+  <div class="greet-in">
+    <p class="gate-verse" id="greetverse"></p>
+    <div class="gate-ref" id="greetref"></div>
+    <button class="greet-x" id="greetx">Close</button>
+  </div>
 </div>
 
 <div id="gate">
@@ -375,14 +678,18 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
 
     <div class="gate-mine" id="gatemine"></div>
   </div>
+  <div class="gate-foot">
+    <div class="gate-line"><i id="gatebar"></i></div>
+    <div class="gate-count" id="gatecount"></div>
+  </div>
 </div>
 
 <div class="sheet" id="gsheet">
   <div class="sheet-in">
-    <h2>The gate</h2>
-    <p>Before a day you have not written on, the gate stands. It holds, then opens on its own — there is nothing to tap. The time is yours to pray in.</p>
+    <h2>Settings</h2>
 
-    <h3>How long it holds</h3>
+    <h3>The gate</h3>
+    <p>Before a day you have not written on, the gate stands. It holds, then opens on its own — there is nothing to tap. The time is yours to pray in.</p>
     <input class="code" id="gsecs" type="number" min="5" step="1"
            style="min-height:0;height:44px;font-size:15px;padding:0 12px">
     <p style="font-size:13px;margin-top:8px">Seconds. Five is the least it can be; there is no most.</p>
@@ -391,29 +698,62 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
 
     <h3>Your verse over the gate</h3>
     <p>Proverbs 3:5&ndash;6 stays. Beneath it goes a verse of your own — the one that jumped at you. Change it whenever it stops being the one.</p>
-    <textarea class="code" id="gverse" style="font-family:var(--serif);font-size:15px"></textarea>
-    <input class="code" id="gref" placeholder="Reference"
-           style="min-height:0;height:40px;font-size:13px;padding:0 12px;margin-top:8px">
-    <div><button class="btn" id="gvsave">Save verse</button>
-         <button class="btn quiet" id="gvclear">Leave it bare</button></div>
+
+    <div class="chosen" id="gchosen" hidden>
+      <p class="chosen-t" id="gchosentext"></p>
+      <div class="chosen-r" id="gchosenref"></div>
+    </div>
+
+    <div class="finder">
+      <div class="ftabs">
+        <button class="ftab on" id="tabref">By reference</button>
+        <button class="ftab" id="tabfind">By words</button>
+      </div>
+
+      <div id="paneref">
+        <div class="picker">
+          <select class="pick" id="pbook"></select>
+          <select class="pick narrow" id="pchap"></select>
+          <select class="pick narrow" id="pverse"></select>
+        </div>
+        <p class="preview" id="prevref"></p>
+        <div><button class="btn" id="usepick">Put it over the gate</button></div>
+      </div>
+
+      <div id="panefind" hidden>
+        <input class="code" id="qfind" placeholder="Words you remember"
+               style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+        <div class="hits" id="hits"></div>
+      </div>
+    </div>
+
+    <div><button class="btn quiet" id="gvclear">Leave it bare</button></div>
     <p class="said" id="said4"></p>
 
-    <div><button class="btn quiet" id="gclose" style="margin-top:26px">Close</button></div>
-  </div>
-</div>
-
-<div class="veil" id="veil"></div>
-<div class="sheet" id="sheet">
-  <div class="sheet-in">
-    <h2>Keep &amp; restore</h2>
-    <p>Your days live on this phone only. Nothing is sent anywhere, so nothing can be recovered for you. Keeping a copy is the one habit this asks of you.</p>
-
-    <h3>Save a file</h3>
-    <p>The plain way. It lands in your downloads with today's date on it, and your phone already backs up files without being asked. Open it in five years and it is still readable, with or without this app.</p>
+    <h3 id="keephead">Keeping a copy</h3>
+    <p id="duenote" class="duenote" hidden></p>
+    <p>The plain way is a file. It lands in your downloads with today's date on it, and your phone already backs up files without being asked. Open it in five years and it is still readable, with or without this app.</p>
     <div><button class="btn" id="filebtn">Save a file</button>
          <button class="btn quiet" id="loadbtn">Restore from a file</button></div>
     <input type="file" id="fileinput" accept=".json,.txt,application/json,text/plain" style="display:none">
     <p class="said" id="said5"></p>
+
+    <h3>Remind me after</h3>
+    <input class="code" id="gahead" type="number" min="1" step="1"
+           style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+    <p style="font-size:13px;margin-top:8px">Things written onto days ahead, before the gear is marked.</p>
+    <div><button class="btn quiet" id="gasave">Save</button></div>
+    <p class="said" id="said7"></p>
+
+    <h3>Your verse when you open</h3>
+    <p>Your own verse greets you when you open the app. It waits as long as you like and closes on a tap. Proverbs 3:5&ndash;6 stays over the gate either way.</p>
+    <select class="code" id="ggreet" style="min-height:0;height:44px;font-size:15px;padding:0 12px">
+      <option value="daily">Once a day</option>
+      <option value="always">Every time I open it</option>
+      <option value="off">Not at all</option>
+    </select>
+    <div><button class="btn quiet" id="ggsave">Save</button></div>
+    <p class="said" id="said9"></p>
 
     <h3>Or a code</h3>
     <p>Shorter, for moving straight onto another phone. Paste it into a note or email it to yourself.</p>
@@ -430,10 +770,11 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
     <div><button class="btn" id="restorebtn">Restore</button></div>
     <p class="said" id="said2"></p>
 
-    <div><button class="btn quiet" id="closebtn" style="margin-top:26px">Close</button></div>
+    <div><button class="btn quiet" id="gclose" style="margin-top:26px">Close</button></div>
   </div>
 </div>
 
+<div class="veil" id="veil"></div>
 <script>
 'use strict';
 
@@ -474,7 +815,7 @@ function isClosed(k){ return k < todayKey(); }
 let view      = todayKey();   // the day on screen
 let calMonth  = new Date();   // month shown in the calendar
 let prepFirst = false;        // the swap — resets every sitting, every day
-let calOpen   = false;
+let calOpen   = true;    // open on the very first look, so it cannot be missed
 let lastToday = todayKey();
 
 /* ══ day helpers ══════════════════════════════════════════ */
@@ -501,6 +842,10 @@ const $ = id => document.getElementById(id);
 function grow(el){ el.style.height='auto'; el.style.height=(el.scrollHeight)+'px'; }
 
 function render(){
+  if(S.calClosed) calOpen = false;
+  $('cal').classList.toggle('open', calOpen);
+  $('datebtn').setAttribute('aria-expanded', String(calOpen));
+
   const d = dateOf(view), closed = isClosed(view), today = view === todayKey();
 
   $('wd').textContent = DOW[d.getDay()].toUpperCase() + (today ? ' — TODAY' : '');
@@ -514,6 +859,9 @@ function render(){
 
   const blocks = $('blocks');
   blocks.innerHTML = '';
+  const waiting = caps(view);
+  if(waiting.length) blocks.appendChild(capBlock(waiting, closed));
+
   const order = prepFirst ? ['prep','tasks'] : ['tasks','prep'];
 
   order.forEach((L,i) => {
@@ -523,9 +871,79 @@ function render(){
 
   if(closed) blocks.appendChild(dayCommentBlock());
 
+  if(!closed){
+    const bar = document.createElement('div');
+    bar.className = 'actions';
+
+    const cap = document.createElement('button');
+    cap.className = 'act'; cap.textContent = 'Capture a thought for another day';
+    cap.onclick = openCapture;
+    bar.appendChild(cap);
+
+    const cd = document.createElement('button');
+    cd.className = 'act strong'; cd.textContent = 'Commit this day to God';
+    cd.onclick = () => openCommit('this day', () => {
+      const dd = day(view, true);
+      dd.pray = todayKey(); save(); render();
+    });
+    bar.appendChild(cd);
+
+    if(day(view).pray){
+      const m = document.createElement('div');
+      m.className = 'daypray';
+      m.textContent = 'this day was committed ' + shortStamp(day(view).pray);
+      bar.appendChild(m);
+    }
+    blocks.appendChild(bar);
+  }
+
   document.querySelectorAll('textarea.txt, .note-body, .dc-body').forEach(grow);
   if(calOpen) renderCal();
-  if(gateDue(view)) raiseGate(view);
+  paintDot();
+}
+
+/* Captures sit above the lists and outside them — noted, not
+   planned. Claiming one is writing, so it goes through the gate. */
+function capBlock(list, closed){
+  const wrap = document.createElement('section');
+  wrap.className = 'capblock';
+
+  const h = document.createElement('h2');
+  h.textContent = closed ? 'Noted, never taken up' : 'Waiting to be taken in';
+  wrap.appendChild(h);
+
+  list.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'caprow';
+
+    const t = document.createElement('div');
+    t.className = 'captext';
+    t.textContent = c.t + ((c.time||'').trim() ? '  ·  ' + c.time.trim() : '');
+    row.appendChild(t);
+
+    if(!closed){
+      const mk = (label, L) => {
+        const b = document.createElement('button');
+        b.className = 'capact'; b.textContent = label;
+        b.onclick = () => {
+          if(gateAtPen(view, () => claimCapture(view, c.id, L))) return;
+          claimCapture(view, c.id, L);
+        };
+        return b;
+      };
+      const acts = document.createElement('div');
+      acts.className = 'capacts';
+      acts.appendChild(mk('to tasks','tasks'));
+      acts.appendChild(mk('to prepare','prep'));
+      const x = document.createElement('button');
+      x.className = 'capact drop'; x.textContent = 'discard';
+      x.onclick = () => dropCapture(view, c.id);
+      acts.appendChild(x);
+      row.appendChild(acts);
+    }
+    wrap.appendChild(row);
+  });
+  return wrap;
 }
 
 function swapRow(){
@@ -575,6 +993,9 @@ function itemRow(L, it, closed){
   };
   row.appendChild(box);
 
+  const mid = document.createElement('div');
+  mid.className = 'mid';
+
   const ta = document.createElement('textarea');
   ta.className = 'txt'; ta.rows = 1; ta.value = it.t || '';
   if(closed) ta.readOnly = true;
@@ -588,7 +1009,42 @@ function itemRow(L, it, closed){
       if(e.key === 'Enter'){ e.preventDefault(); ta.blur(); focusAdder(L); }
     };
   }
-  row.appendChild(ta);
+  mid.appendChild(ta);
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+
+  if((it.time||'').trim()){
+    const t = document.createElement('span');
+    t.className = 'mtime'; t.textContent = it.time.trim();
+    meta.appendChild(t);
+  }
+
+  if(it.pray){
+    const c = document.createElement('span');
+    c.className = 'mpray';
+    c.textContent = 'committed ' + shortStamp(it.pray);
+    meta.appendChild(c);
+  } else if(!closed){
+    const c = document.createElement('button');
+    c.className = 'mcommit'; c.textContent = 'commit';
+    c.setAttribute('aria-label','Commit this to God');
+    c.onclick = () => openCommit(it.t || 'this', () => {
+      const cur = day(view, true)[L].find(x => x.id === it.id);
+      if(cur){ cur.pray = todayKey(); save(); render(); }
+    });
+    meta.appendChild(c);
+  }
+
+  if((it.time||'').trim() && !closed){
+    const r = document.createElement('button');
+    r.className = 'mremind'; r.textContent = 'set a reminder';
+    r.onclick = () => makeReminder(view, it);
+    meta.appendChild(r);
+  }
+
+  if(meta.childElementCount) mid.appendChild(meta);
+  row.appendChild(mid);
 
   if(!closed){
     const k = document.createElement('button');
@@ -625,6 +1081,10 @@ function adder(L){
     day(view, true)[L].push({ id:newId(), t:v, d:false, n:null });
     save(); render(); focusAdder(L);
     return true;
+  };
+  ta.onfocus = () => {
+    // The gate meets you as you reach for the line — Decision 38.
+    if(gateAtPen(view, () => focusAdder(L))) ta.blur();
   };
   ta.oninput = () => grow(ta);
   ta.onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); commit(); } };
@@ -726,6 +1186,217 @@ function dayCommentBlock(){
   return wrap;
 }
 
+/* ══ handing the ringing to the phone ═════════════════════
+   A web app cannot ring when closed without a server, and a
+   server is forbidden. So the app writes a standard calendar
+   file on the device and lets the phone do what it is for. */
+
+function icsStamp(dayKey, hhmm){
+  const [y,m,d] = dayKey.split('-');
+  let h = '09', mi = '00';
+  const t = (hhmm||'').match(/(\d{1,2})[:.·h ]?(\d{2})?\s*(am|pm)?/i);
+  if(t){
+    h = parseInt(t[1],10);
+    mi = t[2] || '00';
+    const ap = (t[3]||'').toLowerCase();
+    if(ap === 'pm' && h < 12) h += 12;
+    if(ap === 'am' && h === 12) h = 0;
+    h = String(h).padStart(2,'0');
+  }
+  return y + m + d + 'T' + h + mi + '00';
+}
+
+function makeReminder(dayKey, it){
+  const esc = t => String(t||'').replace(/([,;\\])/g,'\\$1').replace(/\n/g,'\\n');
+  const start = icsStamp(dayKey, it.time);
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Order My Steps//EN','CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    'UID:' + it.id + '@ordermysteps',
+    'DTSTAMP:' + icsStamp(todayKey(),'0900'),
+    'DTSTART:' + start,
+    'DURATION:PT15M',
+    'SUMMARY:' + esc(it.t),
+    'BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:' + esc(it.t),'END:VALARM',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'reminder.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* ══ what is at risk ══════════════════════════════════════
+   Not elapsed time, and not days written. What a lost phone
+   actually costs you is what you have written onto days that
+   have not happened yet — a past day lost is a day already
+   lived; a lost Thursday is a Thursday you walk into blind. */
+
+function keepCfg(){
+  if(!S.keep) S.keep = { ahead:5, saved:[], asked:false };
+  if(!Array.isArray(S.keep.saved)) S.keep.saved = [];
+  if(!(S.keep.ahead >= 1)) S.keep.ahead = 5;
+  return S.keep;
+}
+
+function futureIds(){
+  const t = todayKey(), out = [];
+  Object.keys(S.days || {}).forEach(k => {
+    if(k <= t) return;                      // today and the past are already lived
+    const d = S.days[k];
+    ['tasks','prep'].forEach(L => (d[L]||[]).forEach(it => {
+      if((it.t||'').trim()) out.push(it.id);
+    }));
+  });
+  return out;
+}
+
+function atRisk(){
+  const kept = new Set(keepCfg().saved);
+  return futureIds().filter(id => !kept.has(id)).length;
+}
+function copyIsDue(){ return atRisk() >= keepCfg().ahead; }
+
+/* The dot clears only when a copy is actually saved — never
+   from opening the gear and looking. DrawNigh v15.1 §2. */
+function markKept(){ keepCfg().saved = futureIds(); save(); paintDot(); }
+
+function paintDot(){
+  const due = copyIsDue();
+  const dot = $('gdot'); if(dot) dot.hidden = !due;
+  const note = $('duenote');
+  if(note){
+    if(due){
+      const n = atRisk();
+      note.hidden = false;
+      note.textContent = n + (n === 1 ? ' thing' : ' things') + ' written ahead are not in a copy';
+    } else note.hidden = true;
+  }
+}
+
+
+/* ══ capture — a thought thrown at a future day ═══════════
+   It never enters the day it names, so that day stays unplanned
+   and the gate still stands when it comes. Decision 36. */
+
+function caps(k, make){
+  const d = day(k, make);
+  if(make && !d.caps) d.caps = [];
+  return d.caps || [];
+}
+
+function addCapture(k, text, time){
+  const d = day(k, true);
+  if(!d.caps) d.caps = [];
+  d.caps.push({ id:newId(), t:text, time:time||'', at:todayKey() });
+  save();
+}
+
+/* Claiming turns a capture into a real line. It cannot happen
+   without passing the gate, because the gate guards the pen and
+   claiming is writing. Decision 37. */
+function claimCapture(k, id, L){
+  const d = day(k, true);
+  const i = (d.caps||[]).findIndex(c => c.id === id);
+  if(i < 0) return;
+  const c = d.caps[i];
+  d[L].push({ id:newId(), t:c.t, d:false, n:null, time:c.time||'', pray:null });
+  d.caps.splice(i,1);
+  save(); render();
+}
+function dropCapture(k, id){
+  const d = day(k, true);
+  const i = (d.caps||[]).findIndex(c => c.id === id);
+  if(i > -1){ d.caps.splice(i,1); save(); render(); }
+}
+
+/* ══ commit — prayer over the work ════════════════════════
+   Proverbs 16:3. The timer is DrawNigh's, unchanged.
+   The mark is a record and is never counted anywhere. */
+
+const PRAY_LENGTHS  = [30, 60, 120, 180, 300, 600, 900];
+const PRAY_STRETCH  = [30, 60, 120, 300];
+
+let pray = null;   // { secs, left, paused, tick, what, onEnd }
+
+function prayLabel(s){
+  if(s < 60) return s + ' sec';
+  const m = Math.floor(s/60);
+  return m + ' min';
+}
+
+function chime(){
+  try{
+    const C = window.AudioContext || window.webkitAudioContext;
+    if(!C) return;
+    const ac = new C();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine'; o.frequency.value = 880;
+    g.gain.setValueAtTime(0.0001, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.16, ac.currentTime + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.9);
+    o.connect(g); g.connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + 0.95);
+    setTimeout(() => { try{ ac.close(); }catch(e){} }, 1400);
+  }catch(e){}
+}
+
+function openCommit(what, onDone){
+  $('cmwhat').textContent = what;
+  const box = $('cmlengths');
+  box.innerHTML = '';
+  PRAY_LENGTHS.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'plen'; b.textContent = prayLabel(s);
+    b.onclick = () => { $('cmpick').hidden = true; startPray(s, what, onDone); };
+    box.appendChild(b);
+  });
+  $('cmpick').hidden = false;
+  $('cmrun').hidden = true;
+  $('commit').classList.add('up');
+}
+
+function closeCommit(){
+  if(pray && pray.tick) clearInterval(pray.tick);
+  pray = null;
+  $('commit').classList.remove('up');
+}
+
+function paintPray(){
+  if(!pray) return;
+  const m = Math.floor(pray.left/60), s = pray.left%60;
+  $('cmclock').textContent = pray.paused ? '\u2759\u2759 Paused'
+                           : (m ? m + ':' + String(s).padStart(2,'0') : s + '');
+}
+
+function startPray(secs, what, onDone){
+  pray = { secs, left:secs, paused:false, tick:null, what, onDone };
+  $('cmrun').hidden = false;
+  const box = $('cmstretch');
+  box.innerHTML = '';
+  PRAY_STRETCH.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'plen quiet'; b.textContent = '+' + prayLabel(s);
+    b.onclick = () => { pray.left += s; paintPray(); };   // works while paused
+    box.appendChild(b);
+  });
+  paintPray();
+  pray.tick = setInterval(() => {
+    if(!pray || pray.paused) return;
+    pray.left--;
+    if(pray.left <= 0){
+      clearInterval(pray.tick);
+      chime();
+      const done = pray.onDone;
+      pray = null;
+      $('commit').classList.remove('up');
+      if(typeof done === 'function') done();
+    } else paintPray();
+  }, 1000);
+}
+
 /* ══ the Gate ═════════════════════════════════════════════
    Stands before a day nothing is written on. Never before a
    closed day — a past day cannot be planned, so there is
@@ -741,14 +1412,24 @@ function passedSet(){ if(!S.passed) S.passed = {}; return S.passed; }
 
 let gateBusy = false;
 
+/* Browsing is not planning. Capturing is not planning. The gate
+   stands when the pen touches the paper — Decision 38. */
 function gateDue(k){
   if(gateBusy) return false;
   if(isClosed(k)) return false;          // never before a closed day
   if(passedSet()[k]) return false;       // once passed, open for good
-  return !hasWriting(k);                 // only before a day not yet planned
+  return true;
 }
 
-function raiseGate(k){
+/* Called when the user reaches for an empty line. Returns true if
+   the gate took over, in which case the writing waits. */
+function gateAtPen(k, then){
+  if(!gateDue(k)) return false;
+  raiseGate(k, then);
+  return true;
+}
+
+function raiseGate(k, then){
   gateBusy = true;
   const g = gateCfg();
 
@@ -771,14 +1452,30 @@ function raiseGate(k){
   el.classList.remove('going');
   el.classList.add('up');
 
+  const secs = Math.max(5, g.secs);
+  const cnt  = $('gatecount');
+  const bar  = $('gatebar');
+  let left = secs;
+  const show = () => {
+    cnt.textContent = left > 0 ? left : '';
+    if(bar) bar.style.transform = 'scaleX(' + Math.max(0, left / secs) + ')';
+  };
+  show();
+  const tick = setInterval(() => { left--; show(); if(left <= 0) clearInterval(tick); }, 1000);
+
   setTimeout(() => {
+    clearInterval(tick);
+    cnt.textContent = '';
+    if(bar) bar.style.transform = 'scaleX(0)';
     el.classList.add('going');
     setTimeout(() => {
       el.classList.remove('up','going');
       passedSet()[k] = 1; save();
       gateBusy = false;
+      render();
+      if(typeof then === 'function') then();
     }, 520);
-  }, Math.max(5, g.secs) * 1000);
+  }, secs * 1000);
 }
 
 
@@ -912,7 +1609,229 @@ function applyRestored(p){
   render();
 }
 
+
+/* ══ the Scripture inside the app ═════════════════════════
+   The whole KJV ships with it. Fetched once, cached by the
+   service worker, then on the phone forever with no
+   connection. Nothing is ever looked up anywhere. */
+
+let BIBLE = null, bibleLoading = null;
+
+function loadBible(){
+  if(BIBLE) return Promise.resolve(BIBLE);
+  if(bibleLoading) return bibleLoading;
+  bibleLoading = fetch('bible.json')
+    .then(r => r.json())
+    .then(b => { BIBLE = b; return b; })
+    .catch(e => { bibleLoading = null; throw e; });
+  return bibleLoading;
+}
+
+/* DrawNigh brackets Psalm superscriptions — [A Psalm of David.]
+   That is a heading, not the verse, and it has no business over a
+   doorway. Stripped when a verse is chosen; the text is untouched. */
+function plainVerse(t){ return String(t||'').replace(/^\s*\[[^\]]*\]\s*/, '').trim(); }
+
+function refOf(bi, ci, vi){
+  return BIBLE[bi][0] + ' ' + (ci+1) + ':' + (vi+1);
+}
+
+function searchBible(q, cap){
+  const needle = q.toLowerCase().trim();
+  if(needle.length < 3) return [];
+  const out = [];
+  for(let b = 0; b < BIBLE.length; b++){
+    const chaps = BIBLE[b][1];
+    for(let c = 0; c < chaps.length; c++){
+      const vs = chaps[c];
+      for(let v = 0; v < vs.length; v++){
+        if(vs[v].toLowerCase().indexOf(needle) > -1){
+          out.push({ b, c, v, t: vs[v] });
+          if(out.length >= cap) return out;
+        }
+      }
+    }
+  }
+  return out;
+}
+
 /* ══ wiring ═══════════════════════════════════════════════ */
+
+
+/* ── choosing a verse ───────────────────── */
+function setChosen(text, ref){
+  const g = gateCfg();
+  g.verse = text || ''; g.ref = ref || '';
+  save(); paintChosen();
+}
+function paintChosen(){
+  const g = gateCfg();
+  const has = (g.verse||'').trim();
+  $('gchosen').hidden = !has;
+  if(has){
+    $('gchosentext').textContent = g.verse.trim();
+    $('gchosenref').textContent = (g.ref||'').trim();
+  }
+}
+
+function fillBooks(){
+  const sel = $('pbook');
+  if(sel.childElementCount) return;
+  BIBLE.forEach((b,i) => {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = b[0];
+    sel.appendChild(o);
+  });
+}
+function fillNums(sel, n, keep){
+  sel.innerHTML = '';
+  for(let i = 0; i < n; i++){
+    const o = document.createElement('option');
+    o.value = i; o.textContent = i+1;
+    sel.appendChild(o);
+  }
+  if(keep != null && keep < n) sel.value = keep;
+}
+function onBook(){
+  const bi = +$('pbook').value;
+  fillNums($('pchap'), BIBLE[bi][1].length, 0);
+  onChap();
+}
+function onChap(){
+  const bi = +$('pbook').value, ci = +$('pchap').value;
+  fillNums($('pverse'), BIBLE[bi][1][ci].length, 0);
+  onVerse();
+}
+function onVerse(){
+  const bi = +$('pbook').value, ci = +$('pchap').value, vi = +$('pverse').value;
+  $('prevref').textContent = plainVerse(BIBLE[bi][1][ci][vi]);
+}
+
+async function openFinder(){
+  try{
+    $('prevref').textContent = 'Opening the Scriptures…';
+    await loadBible();
+    fillBooks();
+    if(!$('pchap').childElementCount) onBook();
+    else onVerse();
+  }catch(e){
+    $('prevref').textContent = 'Could not open the Scriptures. Try once more when you are online.';
+  }
+}
+
+$('pbook').onchange  = onBook;
+$('pchap').onchange  = onChap;
+$('pverse').onchange = onVerse;
+
+$('usepick').onclick = () => {
+  if(!BIBLE) return;
+  const bi = +$('pbook').value, ci = +$('pchap').value, vi = +$('pverse').value;
+  setChosen(plainVerse(BIBLE[bi][1][ci][vi]), refOf(bi, ci, vi));
+  say('said4','Set over the gate');
+};
+
+$('tabref').onclick = () => {
+  $('tabref').classList.add('on'); $('tabfind').classList.remove('on');
+  $('paneref').hidden = false; $('panefind').hidden = true;
+};
+$('tabfind').onclick = () => {
+  $('tabfind').classList.add('on'); $('tabref').classList.remove('on');
+  $('panefind').hidden = false; $('paneref').hidden = true;
+  $('qfind').focus();
+};
+
+let findTimer = null;
+$('qfind').oninput = () => {
+  clearTimeout(findTimer);
+  findTimer = setTimeout(runFind, 220);
+};
+
+async function runFind(){
+  const q = $('qfind').value.trim();
+  const box = $('hits');
+  box.innerHTML = '';
+  if(q.length < 3){
+    if(q.length) box.innerHTML = '<div class="hitnote">Keep going — three letters at least</div>';
+    return;
+  }
+  box.innerHTML = '<div class="hitnote">Looking…</div>';
+  try{ await loadBible(); }
+  catch(e){ box.innerHTML = '<div class="hitnote">Could not open the Scriptures</div>'; return; }
+
+  const hits = searchBible(q, 60);
+  box.innerHTML = '';
+  if(!hits.length){
+    box.innerHTML = '<div class="hitnote">Nothing found</div>';
+    return;
+  }
+  hits.forEach(h => {
+    const b = document.createElement('button');
+    b.className = 'hit';
+    const r = document.createElement('b'); r.textContent = refOf(h.b, h.c, h.v);
+    const t = document.createElement('span');
+    const i = h.t.toLowerCase().indexOf(q.toLowerCase());
+    t.appendChild(document.createTextNode(h.t.slice(0, i)));
+    const m = document.createElement('mark'); m.textContent = h.t.slice(i, i+q.length);
+    t.appendChild(m);
+    t.appendChild(document.createTextNode(h.t.slice(i+q.length)));
+    b.appendChild(r); b.appendChild(t);
+    b.onclick = () => {
+      setChosen(plainVerse(h.t), refOf(h.b, h.c, h.v));
+      say('said4','Set over the gate');
+    };
+    box.appendChild(b);
+  });
+  if(hits.length === 60){
+    const n = document.createElement('div');
+    n.className = 'hitnote'; n.textContent = 'First sixty — narrow it if yours is not here';
+    box.appendChild(n);
+  }
+}
+
+/* ── capture ────────────────────────────── */
+function openCapture(){
+  const d = dateOf(view); d.setDate(d.getDate()+1);
+  $('capdate').value = keyOf(d);
+  $('captext').value = ''; $('captime').value = '';
+  $('capsheet').classList.add('open');
+  $('veil').classList.add('open');
+}
+function closeCapture(){
+  $('capsheet').classList.remove('open');
+  $('veil').classList.remove('open');
+}
+$('capclose').onclick = closeCapture;
+$('capsave').onclick = () => {
+  const k = $('capdate').value, t = $('captext').value.trim();
+  if(!k){ say('said8','Pick a day'); return; }
+  if(!t){ say('said8','Write the thought'); return; }
+  addCapture(k, t, $('captime').value.trim());
+  closeCapture(); render();
+};
+
+/* ── commit ─────────────────────────────── */
+$('cmx').onclick = closeCommit;          // ends instantly and silently
+$('cmclock').onclick = () => { if(pray){ pray.paused = !pray.paused; paintPray(); } };
+
+/* ── the greeting ───────────────────────── */
+function greetDue(){
+  const g = gateCfg();
+  const how = S.greet === undefined ? 'daily' : S.greet;
+  if(how === 'off') return false;
+  if(!(g.verse||'').trim()) return false;
+  if(how === 'always') return true;
+  return S.greetedOn !== todayKey();
+}
+function showGreeting(){
+  const g = gateCfg();
+  $('greetverse').textContent = g.verse.trim();
+  $('greetref').textContent = (g.ref||'').trim();
+  $('greet').classList.add('up');
+  S.greetedOn = todayKey(); save();
+}
+$('greetx').onclick = () => $('greet').classList.remove('up');
+
+
 function step(n){
   const d = dateOf(view); d.setDate(d.getDate() + n);
   view = keyOf(d); calMonth = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -923,6 +1842,8 @@ $('next').onclick = () => step(1);
 
 $('datebtn').onclick = () => {
   calOpen = !calOpen;
+  S.calClosed = !calOpen;                 // a preference set by what you did
+  save();
   $('cal').classList.toggle('open', calOpen);
   $('datebtn').setAttribute('aria-expanded', String(calOpen));
   if(calOpen){ calMonth = new Date(dateOf(view).getFullYear(), dateOf(view).getMonth(), 1); renderCal(); }
@@ -936,12 +1857,28 @@ function openGateSheet(on){
   if(on){
     const g = gateCfg();
     $('gsecs').value = g.secs;
-    $('gverse').value = g.verse || '';
-    $('gref').value = g.ref || '';
+    paintChosen();
+    openFinder();
+    $('gahead').value = keepCfg().ahead;
+    $('ggreet').value = S.greet === undefined ? 'daily' : S.greet;
+    fillCode();
+    paintDot();
   }
 }
-$('gatebtn').onclick = () => openGateSheet(true);
+$('gearbtn').onclick = () => openGateSheet(true);
 $('gclose').onclick  = () => openGateSheet(false);
+
+$('ggsave').onclick = () => {
+  S.greet = $('ggreet').value; save();
+  say('said9','Saved');
+};
+
+$('gasave').onclick = () => {
+  const n = Math.floor(Number($('gahead').value));
+  if(!(n >= 1)){ $('gahead').value = keepCfg().ahead; say('said7','At least one'); return; }
+  keepCfg().ahead = n; save(); paintDot();
+  say('said7','After ' + n);
+};
 
 $('gsave').onclick = () => {
   const n = Math.floor(Number($('gsecs').value));
@@ -949,33 +1886,16 @@ $('gsave').onclick = () => {
   gateCfg().secs = n; save();
   say('said3', n + ' seconds');
 };
-$('gvsave').onclick = () => {
-  const g = gateCfg();
-  g.verse = $('gverse').value.trim();
-  g.ref   = $('gref').value.trim();
-  save(); say('said4', g.verse ? 'Set over the gate' : 'Left bare');
-};
-$('gvclear').onclick = () => {
-  const g = gateCfg();
-  g.verse = ''; g.ref = '';
-  $('gverse').value = ''; $('gref').value = '';
-  save(); say('said4','Left bare');
-};
+$('gvclear').onclick = () => { setChosen('',''); say('said4','Left bare'); };
 
-function openSheet(on){
-  $('sheet').classList.toggle('open', on);
-  $('veil').classList.toggle('open', on);
-  if(on) fillCode();
-}
-$('keepbtn').onclick  = () => openSheet(true);
-$('closebtn').onclick = () => openSheet(false);
-$('veil').onclick     = () => { openSheet(false); openGateSheet(false); };
-$('makebtn').onclick  = fillCode;
+$('veil').onclick    = () => { openGateSheet(false); closeCapture(); };
+$('makebtn').onclick = fillCode;
 
 $('copybtn').onclick = async () => {
   const t = $('outcode');
   try{
     await navigator.clipboard.writeText(t.value);
+    markKept();
     say('said1','Copied');
   }catch(e){
     t.removeAttribute('readonly'); t.select();
@@ -985,7 +1905,7 @@ $('copybtn').onclick = async () => {
   }
 };
 
-$('filebtn').onclick = () => { saveFile(); say('said5','Saved to your downloads'); };
+$('filebtn').onclick = () => { saveFile(); markKept(); say('said5','Saved to your downloads'); };
 $('loadbtn').onclick = () => $('fileinput').click();
 $('fileinput').onchange = async e => {
   const f = e.target.files && e.target.files[0];
@@ -1026,8 +1946,48 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+/* ══ first run — asked once, taken or refused, never assumed ══ */
+const FR = [
+  { n:3,  why:'a light touch' },
+  { n:5,  why:'suggested' },
+  { n:10, why:'less often' },
+  { n:0,  why:'never remind me' }
+];
+
+function askFirstRun(){
+  const box = $('frchoices');
+  box.innerHTML = '';
+  FR.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'frbtn';
+    b.innerHTML = '<b>' + (o.n ? o.n + ' things written ahead' : 'Do not remind me') +
+                  '</b><i>' + o.why + '</i>';
+    b.onclick = () => {
+      const k = keepCfg();
+      k.ahead = o.n || 1e9;      // "never" is a threshold nothing reaches
+      k.asked = true;
+      save();
+      $('firstrun').classList.remove('open');
+      $('veil').classList.remove('open');
+      render();
+    };
+    box.appendChild(b);
+  });
+  $('firstrun').classList.add('open');
+  $('veil').classList.add('open');
+}
+
 load();
-render();
+
+if(!keepCfg().asked && !Object.keys(S.days || {}).length){
+  gateBusy = true;                 // the gate waits until this is answered
+  render();
+  gateBusy = false;
+  askFirstRun();
+} else {
+  render();
+  if(greetDue()) showGreeting();
+}
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
