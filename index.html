@@ -607,6 +607,29 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
   letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft);
   margin:0 0 16px;
 }
+
+/* Decision 69 — the header is frozen, with ✕ at its right. §6.6's house
+   lesson is that a thing you cannot see does not exist, and an exit at
+   the bottom of a long scroll is a thing you cannot see. A panel should
+   be as easy to leave as it was to enter.
+   Scoped to Settings on purpose: §18 leaves the other panels for a
+   decision session, not for a build. */
+#gsheet{ padding-top:0; }
+#gsheet .sheet-head{
+  position:sticky; top:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin:0 calc(var(--pad) * -1) 16px;
+  padding:20px var(--pad) 12px;
+  background:var(--paper);
+  border-bottom:1px solid var(--rule-soft);
+}
+#gsheet .sheet-head h2{ margin:0; }
+.sheet-x{
+  border:0; background:none; cursor:pointer; line-height:1;
+  font-family:var(--mono); font-size:15px; color:var(--ink-faint);
+  padding:4px 2px 4px 14px; margin:-4px 0;
+}
+.sheet-x:hover{ color:var(--ink); }
 .sheet h3{
   font-family:var(--mono); font-size:9.5px; font-weight:400;
   letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint);
@@ -635,6 +658,43 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
   text-transform:uppercase; color:var(--red); min-height:14px;
   margin-top:10px;
 }
+
+/* ── the chime — Decisions 67 and 68 ──────
+   A range, not two named states, and both of its ends are real: quiet
+   enough for a still room at one, loud enough to carry over music at
+   the other. Neither end is the default the other has to live with, so
+   the middle is where it starts. */
+.rangerow{ display:flex; align-items:center; gap:10px; margin:2px 0 4px; }
+.rangeend{
+  font-family:var(--mono); font-size:9px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ink-faint); white-space:nowrap;
+}
+.range{
+  -webkit-appearance:none; appearance:none;
+  flex:1; height:26px; background:none; cursor:pointer;
+}
+.range::-webkit-slider-runnable-track{
+  height:2px; background:var(--rule); border-radius:2px;
+}
+.range::-moz-range-track{ height:2px; background:var(--rule); border-radius:2px; }
+.range::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:17px; height:17px; border-radius:50%; margin-top:-7.5px;
+  background:var(--ink); border:0;
+}
+.range::-moz-range-thumb{
+  width:17px; height:17px; border-radius:50%;
+  background:var(--ink); border:0;
+}
+.range:focus{ outline:none; }
+.nums{ display:flex; gap:8px; margin:2px 0 0; }
+.numbtn{
+  flex:1; border:1px solid var(--rule); background:none; cursor:pointer;
+  border-radius:4px; padding:11px 0;
+  font-family:var(--mono); font-size:13px; color:var(--ink-soft);
+}
+.numbtn:hover{ border-color:var(--ink-soft); color:var(--ink); }
+.numbtn.on{ border-color:var(--ink); background:var(--ink); color:var(--paper); }
 </style>
 </head>
 <body>
@@ -698,6 +758,19 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
     <h3>Remind me after this many things written ahead</h3>
     <div id="frchoices"></div>
     <p class="said" id="said6"></p>
+  </div>
+</div>
+
+<!-- Decision 40 — said once, at the moment it matters, then never again.
+     The app cannot look and see whether a calendar is installed, so this
+     is a thing stated rather than a thing detected. -->
+<div class="sheet" id="icssheet">
+  <div class="sheet-in">
+    <h2>Before you do</h2>
+    <p>This hands the reminder to your phone. <b>Your own clock or calendar app does the ringing</b> — this app never can, and if neither is installed there is nothing to hand it to.</p>
+    <p>You will be asked which app should take it.</p>
+    <div><button class="btn" id="icsgo">Go on</button>
+         <button class="btn quiet" id="icsno">Not now</button></div>
   </div>
 </div>
 
@@ -805,7 +878,10 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
 
 <div class="sheet" id="gsheet">
   <div class="sheet-in">
-    <h2>Settings</h2>
+    <div class="sheet-head">
+      <h2>Settings</h2>
+      <button class="sheet-x" id="gx" aria-label="Close settings">&#10005;</button>
+    </div>
 
     <h3>The gate</h3>
     <p>Before a day you have not written on, the gate stands. It holds, then opens on its own — there is nothing to tap. The time is yours to pray in.</p>
@@ -814,6 +890,33 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
     <p style="font-size:13px;margin-top:8px">Seconds. Five is the least it can be; there is no most.</p>
     <div><button class="btn" id="gsave">Save</button></div>
     <p class="said" id="said3"></p>
+
+    <!-- Decisions 67 and 68 — the chime is chosen, not fixed. The desk
+         with a customer in front of you and the room with the door shut
+         are opposite requirements, and the app was built for one. -->
+    <h3>The chime</h3>
+    <p>A chime closes a prayer that runs its course. A desk with someone in front of you and a room with the door shut want opposite things from it, so where it sits is yours.</p>
+
+    <div class="rangerow">
+      <span class="rangeend">still room</span>
+      <input class="range" id="cvol" type="range" min="1" max="9" step="1"
+             aria-label="How loud the chime is">
+      <span class="rangeend">over music</span>
+    </div>
+
+    <h3 style="margin-top:18px">How many</h3>
+    <p>One is easily missed by a man who is really praying. Five is not an alarm — it is a sound long enough to reach someone who is not waiting for it.</p>
+    <div class="nums" id="cnums"></div>
+
+    <div><button class="btn quiet" id="chear">Hear it</button></div>
+    <p style="font-size:13px;margin-top:10px">Set it by ear, at both ends — once with music playing, once in silence.</p>
+    <p style="font-size:13px;margin-top:8px;color:var(--ink-faint)">This can take the chime down. It can never take it above what your phone allows, and on silent nothing sounds at all.</p>
+    <p class="said" id="said12"></p>
+
+    <!-- Decision 40's limit, kept where the app's other honest limits
+         live, for a man who waved the first-tap note away unread. -->
+    <h3>A time on a task</h3>
+    <p>A time written on a task is shown, never rung — a saved page cannot ring when it is closed. <em>Set a reminder</em> hands it to your phone instead, and <b>your own clock or calendar app does the ringing.</b> If neither is installed there is nothing to hand it to.</p>
 
     <h3>Your verse over the gate</h3>
     <p>Proverbs 3:5&ndash;6 stays. Beneath it goes a verse of your own — the one that jumped at you. Change it whenever it stops being the one.</p>
@@ -1370,10 +1473,10 @@ function icsStamp(dayKey, hhmm){
   return y + m + d + 'T' + h + mi + '00';
 }
 
-function makeReminder(dayKey, it){
+function buildIcs(dayKey, it){
   const esc = t => String(t||'').replace(/([,;\\])/g,'\\$1').replace(/\n/g,'\\n');
   const start = icsStamp(dayKey, it.time);
-  const ics = [
+  return [
     'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Order My Steps//EN','CALSCALE:GREGORIAN',
     'BEGIN:VEVENT',
     'UID:' + it.id + '@ordermysteps',
@@ -1384,12 +1487,60 @@ function makeReminder(dayKey, it){
     'BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:' + esc(it.t),'END:VALARM',
     'END:VEVENT','END:VCALENDAR'
   ].join('\r\n');
+}
+
+/* Decision 40 says the phone *offers* to open the file in its own clock
+   or calendar. A download is not an offer — it is a save, into a folder
+   belonging to the browser that nothing else on the phone may read. That
+   is why the file landed and went nowhere. Handing it to the phone's own
+   share sheet is the offer the decision actually describes, and it also
+   means nothing is written anywhere for a man who changes his mind.
+   The save is kept as the way out where a browser cannot share a file. */
+function saveIcs(ics){
   const blob = new Blob([ics], {type:'text/calendar'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = 'reminder.ics';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function handOver(ics, name){
+  let file = null;
+  try{ file = new File([ics], 'reminder.ics', { type:'text/calendar' }); }catch(e){}
+  const can = file && navigator.share && navigator.canShare &&
+              (() => { try{ return navigator.canShare({ files:[file] }); }catch(e){ return false; } })();
+  if(!can){ saveIcs(ics); return; }
+  navigator.share({ files:[file], title: name || 'Reminder' }).catch(err => {
+    /* Backing out of the sheet is a decision, not a failure. Nothing is
+       saved behind him — that would be the silent file all over again. */
+    if(err && err.name === 'AbortError') return;
+    saveIcs(ics);
+  });
+}
+
+/* Said once, on the first tap ever, and never again. Decision 33's shape
+   — offered once, taken or refused, never assumed — rather than a line
+   repeated under every timed task on the page, which §6.5 refused when
+   it was a red button and refuses again when it is a sentence. */
+let icsWaiting = null;
+
+function makeReminder(dayKey, it){
+  const ics = buildIcs(dayKey, it);
+  const name = (it.t || '').trim() || 'Reminder';
+  if(S.icsTold){ handOver(ics, name); return; }
+  icsWaiting = { ics, name };
+  $('icssheet').classList.add('open');
+  $('veil').classList.add('open');
+}
+
+function closeIcsSay(go){
+  $('icssheet').classList.remove('open');
+  $('veil').classList.remove('open');
+  const w = icsWaiting; icsWaiting = null;
+  if(!go || !w) return;               // backing out hands over nothing
+  S.icsTold = true; save();           // he has been told; it never returns
+  handOver(w.ics, w.name);
 }
 
 /* ══ what is at risk ══════════════════════════════════════
@@ -1576,8 +1727,14 @@ function saveRule(spec){
    Proverbs 16:3. The timer is DrawNigh's, unchanged.
    The mark is a record and is never counted anywhere. */
 
-const PRAY_LENGTHS  = [30, 60, 120, 180, 300, 600, 900];
-const PRAY_STRETCH  = [30, 60, 120, 300];
+/* Decision 48 gives the timer seconds to fifteen minutes, and the floor
+   at both ends of that is five — the Gate's number (Decision 24), and
+   the length of the breath prayer §4.5 is built around: one breath,
+   Jesus please help me. Five joins the row rather than replacing the
+   half minute, because a breath prayer and a short deliberate prayer
+   are two different acts and a man is in each of them. */
+const PRAY_LENGTHS  = [5, 30, 60, 120, 180, 300, 600, 900];
+const PRAY_STRETCH  = [5, 30, 60, 120, 300, 600, 900];
 
 /* Decision 50 — the clock is the wall clock, never a count of ticks.
    A phone that sleeps stops handing out ticks, and a prayer measured
@@ -1601,7 +1758,45 @@ function prayLabel(s){
    If the phone suspends it anyway, the prayer notices on return and
    rings then. It never rings twice. */
 
-let prayAC = null, praySilence = null, prayChimeNode = null;
+let prayAC = null, praySilence = null, prayChimeNodes = [];
+
+/* ── how loud, and how many — Decisions 67 and 68 ──────
+   The range must reach a still room at one end and a room with music
+   playing at the other, and neither end is the default the other has
+   to live with — so the middle of it is where a new phone starts, and
+   the middle is the soft chime Decision 48 was written with.
+   Loudness is heard logarithmically, so the steps are geometric: each
+   one is the same step up to the ear, not the same step in the number. */
+const CHIME_STEPS = 9;               // positions on the range
+const CHIME_MIN   = 0.025;           // a still room
+const CHIME_MAX   = 1.0;             // over a track playing in the open
+const CHIME_GAP   = 0.62;            // between strikes — a peal, not a ring
+const BELL_TAIL   = 0.95;            // how long one strike takes to die
+
+function chimeCfg(){
+  if(!S.chime || typeof S.chime !== 'object') S.chime = { vol:5, n:3 };
+  const c = S.chime;
+  /* A number that is there but out of range is clamped to the nearest
+     end; only a missing or unreadable one falls back to the middle. A
+     stored zero must become one, not silently become the default. */
+  const fix = (v, dflt, lo, hi) => {
+    const x = Math.round(Number(v));
+    if(!Number.isFinite(x)) return dflt;
+    return Math.min(hi, Math.max(lo, x));
+  };
+  c.vol = fix(c.vol, 5, 1, CHIME_STEPS);
+  c.n   = fix(c.n,   3, 1, 5);
+  return c;
+}
+
+function chimeGain(){
+  const v = chimeCfg().vol;
+  return CHIME_MIN * Math.pow(CHIME_MAX / CHIME_MIN, (v - 1) / (CHIME_STEPS - 1));
+}
+
+/* How long the whole peal takes, so the audio context is never put to
+   sleep on top of a bell still ringing. */
+function chimeSecs(){ return (chimeCfg().n - 1) * CHIME_GAP + BELL_TAIL; }
 
 function audioWake(){
   try{
@@ -1628,19 +1823,32 @@ function audioSleep(){
 }
 
 function cancelChime(){
-  try{ if(prayChimeNode){ prayChimeNode.stop(0); prayChimeNode.disconnect(); } }catch(e){}
-  prayChimeNode = null;
+  prayChimeNodes.forEach(n => {
+    try{ n.stop(0); n.disconnect(); }catch(e){}
+  });
+  prayChimeNodes = [];
 }
 
-function bellAt(ac, at){
+function bellAt(ac, at, peak){
   const o = ac.createOscillator(), g = ac.createGain();
   o.type = 'sine'; o.frequency.value = 880;
   g.gain.setValueAtTime(0.0001, at);
-  g.gain.exponentialRampToValueAtTime(0.16, at + 0.05);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), at + 0.05);
   g.gain.exponentialRampToValueAtTime(0.0001, at + 0.9);
   o.connect(g); g.connect(ac.destination);
-  o.start(at); o.stop(at + 0.95);
+  o.start(at); o.stop(at + BELL_TAIL);
   return o;
+}
+
+/* One strike or five, laid down in a row from `at`. Decision 67 —
+   how many is the user's, because a single tone is missable by a man
+   who is genuinely praying. */
+function peal(ac, at){
+  const n = chimeCfg().n, peak = chimeGain(), out = [];
+  for(let i = 0; i < n; i++){
+    try{ out.push(bellAt(ac, at + i * CHIME_GAP, peak)); }catch(e){}
+  }
+  return out;
 }
 
 /* Book the bell for `inSecs` from now. Called again whenever the end
@@ -1650,14 +1858,14 @@ function bookChime(inSecs){
   const ac = audioWake();
   if(!ac || !pray) return;
   const at = ac.currentTime + Math.max(0, inSecs);
-  try{ prayChimeNode = bellAt(ac, at); }catch(e){ prayChimeNode = null; }
+  prayChimeNodes = peal(ac, at);
   pray.chimeAt = at;
 }
 
 function chime(){                       // rings now
   const ac = audioWake();
   if(!ac) return;
-  try{ bellAt(ac, ac.currentTime + 0.02); }catch(e){}
+  prayChimeNodes = prayChimeNodes.concat(peal(ac, ac.currentTime + 0.02));
 }
 
 /* Decision 52 \u2014 the mark carries the moment the prayer ENDED, not the
@@ -1761,7 +1969,10 @@ function endPray(){
   if(!rang){ cancelChime(); chime(); }
   const target = pray.target, ended = pray.endAt;
   pray = null; S.pray = null;
-  setTimeout(audioSleep, 1200);          // let the bell finish
+  /* Let the whole peal finish. One strike or five, the context must not
+     be put to sleep on top of a bell still ringing. */
+  const wait = chimeSecs() * 1000 + 400;
+  setTimeout(() => { if(!pray) audioSleep(); }, wait);
   $('commit').classList.remove('up');
   applyCommit(target, keyOf(new Date(ended)));
 }
@@ -2466,6 +2677,7 @@ function openGateSheet(on, over){
     paintChosen();
     openFinder();
     $('gahead').value = keepCfg().ahead;
+    paintChime();
     $('ggreet').value = S.greet === undefined ? 'daily' : S.greet;
     fillCode();
     paintRules();
@@ -2474,6 +2686,7 @@ function openGateSheet(on, over){
 }
 $('gearbtn').onclick = () => openGateSheet(true);
 $('gclose').onclick  = () => openGateSheet(false);
+$('gx').onclick      = () => openGateSheet(false);   // Decision 69 — the way out at the top
 
 $('ggsave').onclick = () => {
   S.greet = $('ggreet').value; save();
@@ -2495,7 +2708,58 @@ $('gsave').onclick = () => {
 };
 $('gvclear').onclick = () => { setChosen('',''); say('said4','Left bare'); };
 
-$('veil').onclick    = () => { openGateSheet(false); closeCapture(); closeRepeat(); };
+/* ── the chime settings — Decisions 67 and 68 ──────
+   Both are set by ear rather than by the number, so every change
+   sounds the chime it just made. §20: both ends are tested by ear,
+   and a range you cannot hear is a range you are guessing at. */
+let demoNodes = [];
+
+function chimeDemo(){
+  const ac = audioWake();            // this tap is the hand that opens sound
+  if(!ac){ say('said12','This browser will not play sound'); return; }
+  demoNodes.forEach(n => { try{ n.stop(0); n.disconnect(); }catch(e){} });
+  demoNodes = peal(ac, ac.currentTime + 0.05);
+  const wait = chimeSecs() * 1000 + 400;
+  setTimeout(() => { if(!pray) audioSleep(); }, wait);
+}
+
+/* A prayer cannot be running while Settings is open — the commit screen
+   covers the app until it ends. Kept anyway: a bell already booked was
+   laid down at the old setting, and the setting is what should decide. */
+function rebookChime(){
+  if(pray && !pray.paused) bookChime(prayLeft());
+}
+
+function paintChime(){
+  const c = chimeCfg();
+  $('cvol').value = c.vol;
+  const box = $('cnums');
+  box.innerHTML = '';
+  for(let i = 1; i <= 5; i++){
+    const b = document.createElement('button');
+    b.className = 'numbtn' + (i === c.n ? ' on' : '');
+    b.textContent = String(i);
+    b.setAttribute('aria-pressed', String(i === c.n));
+    b.onclick = () => {
+      chimeCfg().n = i; save(); rebookChime();
+      paintChime(); chimeDemo();
+      say('said12', i === 1 ? 'One chime' : i + ' chimes');
+    };
+    box.appendChild(b);
+  }
+}
+
+$('cvol').oninput  = () => { chimeCfg().vol = Number($('cvol').value); };
+$('cvol').onchange = () => {
+  chimeCfg().vol = Number($('cvol').value);
+  save(); rebookChime(); chimeDemo();
+};
+$('chear').onclick = chimeDemo;
+
+$('icsgo').onclick = () => closeIcsSay(true);    // this tap is the hand that opens the share sheet
+$('icsno').onclick = () => closeIcsSay(false);
+
+$('veil').onclick    = () => { openGateSheet(false); closeCapture(); closeRepeat(); closeIcsSay(false); };
 $('makebtn').onclick = fillCode;
 
 $('copybtn').onclick = async () => {
