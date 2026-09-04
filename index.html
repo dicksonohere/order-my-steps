@@ -136,12 +136,107 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
 
 .adder .box{ border-style:dashed; border-color:var(--rule); cursor:text; }
 
+/* ── a line's furniture — Decisions 95 and 99 ──────
+   grip · box · letter · text · ×
+   The grip is drawn on purpose. A long press with nothing on the screen
+   to say so is invisible, and §6.6's house lesson is that a thing you
+   cannot see does not exist. Every other affordance in this app was
+   found the hard way; this one is not going to be. */
+.units{ position:relative; }
+.unit{ position:relative; }
+.unit.lifted{ z-index:6; }
+.unit.lifted .item{
+  background:var(--paper);
+  box-shadow:0 7px 20px rgba(27,42,74,.16);
+  border-radius:6px;
+}
+.unit.sliding{ transition:transform .22s ease; }
+
+.grip{
+  flex:none; width:15px; height:27px; margin-top:1px; padding:0;
+  border:0; background:none; cursor:grab; color:var(--rule);
+  touch-action:none;              /* or the page scrolls instead of the line moving */
+  display:flex; align-items:center; justify-content:center;
+}
+.grip:hover{ color:var(--ink-faint); }
+.grip:active{ cursor:grabbing; color:var(--ink-soft); }
+.grip svg{ display:block; }
+.gripgap{ flex:none; width:15px; }        /* a closed day keeps the alignment */
+
+/* Decision 99 — the letter sits between the box and the task, where the
+   eye scanning a day will read it. Unset, it is a dashed slot: the same
+   vocabulary as the adder's dashed box, a control that prints nothing
+   into the day. §3's blank page is untouched. */
+.pri{
+  flex:none; width:19px; height:19px; margin-top:4px; padding:0;
+  border:1.4px dashed var(--rule); border-radius:3px;
+  background:none; cursor:pointer;
+  font-family:var(--mono); font-size:11.5px; line-height:1;
+  color:var(--ink-faint);
+}
+.pri:hover{ border-color:var(--ink-soft); }
+.pri.set{ border-style:solid; border-color:var(--ink-soft); color:var(--ink); }
+.pri.fixed{ cursor:default; border-style:solid; }
+.pri.fixed.blank, .pri.blank{ border-color:transparent; background:none; }
+
+/* Decision 83 — a drag under sorting slides back, and the app says why.
+   It names both ways out, because §6.6 says the way out of a refusal is
+   a thing, and a thing that is not visible does not exist. */
+.dropline{
+  position:absolute; left:0; right:0; height:2px; z-index:4;
+  background:var(--ink-soft); border-radius:2px; pointer-events:none;
+}
+.dragsay{
+  font-family:var(--serif); font-size:14.5px; line-height:1.45;
+  color:var(--red); margin:10px 0 0;
+}
+
+/* ── steps under a task — Decisions 75 to 79 ──────
+   One kind of sub-line: a line with a box. It carries no commit, no
+   time, no reminder, no note and no letter — the parent holds every one
+   of those, because a step is part of a job and not a job. */
+.subs{ margin:2px 0 4px 45px; position:relative; }
+.subitem{ display:flex; align-items:flex-start; gap:9px; margin-bottom:1px; }
+.subitem .box{ width:14px; height:14px; margin-top:6px; }
+.subitem .box.on::after{ left:2.2px; top:4px; width:7.5px; height:3.6px; }
+.subitem .txt{ font-size:15.5px; min-height:26px; }
+.subitem .grip{ height:24px; }
+.subitem .kill{ font-size:13px; }
+.subadd .box{ border-style:dashed; border-color:var(--rule); cursor:text; }
+.subfold{
+  display:block; margin:0 0 10px 45px; padding:3px 0;
+  border:0; background:none; cursor:pointer;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint);
+}
+.subfold:hover{ color:var(--ink); }
+
+/* ── thanksgiving — Decisions 89 to 94 ──────
+   One box, at the foot, below both lists. The swap reorders Tasks and
+   Prepare and never reaches this. Nothing is printed inside it in any
+   state: no prompt, no placeholder, no greyed example. Decision 93. */
+.thanks{ margin-top:34px; padding-top:18px; border-top:1px solid var(--rule-soft); }
+.thanks h2{
+  font-family:var(--mono); font-size:10.5px; font-weight:400;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-soft); margin:0 0 12px;
+}
+.th-body{
+  width:100%; min-height:56px; border:0; background:none; padding:2px 0;
+  font-family:var(--serif); font-size:17px; line-height:1.55;
+  color:var(--ink); resize:none; overflow:hidden;
+}
+.th-body:focus{ outline:none; }
+.th-body[readonly]{ color:var(--ink-soft); }
+.thanks .note{ margin-left:0; }
+.thanks .addnote{ margin-left:0; }
+
 /* ── the red layer: everything written after ── */
 .note, .daycomment{
   font-family:var(--serif); font-size:15.5px; color:var(--red);
   line-height:1.45;
 }
-.note{ margin:0 0 12px 28px; padding-left:11px; border-left:1.5px solid rgba(140,47,57,.28); }
+.note{ margin:0 0 12px 45px; padding-left:11px; border-left:1.5px solid rgba(140,47,57,.28); }
 .note-body, .dc-body{
   width:100%; border:0; background:none; padding:2px 0;
   font-family:inherit; font-size:inherit; color:inherit; line-height:inherit;
@@ -158,7 +253,7 @@ hr.hair{ border:0; border-top:1px solid var(--rule); margin:14px 0 0; }
   border:0; background:none; cursor:pointer; padding:2px 0;
   font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
   text-transform:uppercase; color:var(--red-soft);
-  margin:0 0 12px 39px;
+  margin:0 0 12px 45px;
 }
 .addnote:hover{ color:var(--red); }
 
@@ -695,6 +790,78 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
 }
 .numbtn:hover{ border-color:var(--ink-soft); color:var(--ink); }
 .numbtn.on{ border-color:var(--ink); background:var(--ink); color:var(--paper); }
+
+/* ── choosing the letter — Decision 80, amended ──────
+   §22.1 chose one character over four words because "urgent and
+   important" is a phrase beside a task that may itself be three. That
+   half stands: the words never go on the line. They appear here, at the
+   one moment a man is choosing, and nowhere else. */
+.prow{
+  display:flex; align-items:baseline; gap:15px; width:100%;
+  text-align:left; margin:0 0 8px; padding:13px 15px;
+  border:1px solid var(--rule); border-radius:6px;
+  background:none; cursor:pointer;
+}
+.prow:hover{ border-color:var(--ink-soft); }
+.prow.on{ border-color:var(--ink); }
+.prow b{
+  flex:none; width:13px; font-weight:400;
+  font-family:var(--mono); font-size:15px; color:var(--ink);
+}
+.prow s{
+  flex:1; text-decoration:none;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-soft);
+}
+.prow.none{ margin-top:14px; }
+.prow.none b{ color:var(--ink-faint); }
+.prow.none s{ color:var(--ink-faint); }
+
+/* Decision 78 — ticking a parent with steps outstanding lists them by
+   name, each with its own box. Three lines are rarely all in the same
+   state, and one yes/no across them would be a lie about at least one. */
+.askrow{ display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
+.askrow .box{ margin-top:3px; }
+.asktext{ font-family:var(--serif); font-size:16px; color:var(--ink); line-height:1.45; }
+
+/* A switch in this app is two buttons, not a slider — Decision 88 wants
+   a control that plainly reads as one and shows that a tap landed. */
+.twoway{ display:flex; gap:8px; margin:2px 0 0; }
+.twoway .numbtn{ flex:1; font-family:var(--mono); font-size:10px;
+  letter-spacing:.14em; text-transform:uppercase; }
+
+/* ── Decision 88 — every button reads as a button, and shows that a tap
+   landed. The absence of exceptions is the decision, so this is written
+   against `button` itself rather than against a list somebody has to
+   keep. The pressed state is the half usually dropped: a tap that shows
+   nothing is a tap a man does not know landed, so he taps again — and
+   that is how a man ends up with two of something. */
+button{ transition:opacity .09s ease, transform .09s ease; }
+button:active{ opacity:.5; transform:scale(.97); }
+
+/* Three that need their own pressed state, because scaling them would
+   look like a fault rather than a press. The grip in particular: a
+   finger covers it entirely, so the landing has to be visible around
+   the thumb rather than underneath it. */
+.box:active{ opacity:1; transform:none; box-shadow:0 0 0 4px rgba(27,42,74,.10); }
+.cell:active{ opacity:1; transform:none; background:var(--paper-deep); }
+.grip:active{
+  opacity:1; transform:none; color:var(--ink-soft);
+  background:var(--paper-deep); border-radius:4px;
+}
+
+/* A word that is a control has to look like one. Quiet is not the same
+   as invisible — §6.5's fault was a button painted the colour of a
+   hairline, and a bare grey word is the same fault in prose. */
+.mremind, .capact, .addnote, .addbtn, .footlink,
+.rrow .rend, .subfold, .arrow{
+  border-bottom:1px dotted var(--rule);
+}
+.mremind:hover, .capact:hover, .addnote:hover, .addbtn:hover,
+.footlink:hover, .rrow .rend:hover, .subfold:hover, .arrow:hover{
+  border-bottom-color:currentColor;
+}
+.arrow{ border-radius:0; }
 </style>
 </head>
 <body>
@@ -831,6 +998,30 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
   </div>
 </div>
 
+<!-- Decision 80, amended by the letter chooser. §22.1 kept one character
+     on the line because a phrase beside a three-word task is four words
+     too many — that half stands. The words appear here, at the moment a
+     man is choosing, and never on the line afterwards. -->
+<div class="sheet" id="psheet">
+  <div class="sheet-in">
+    <h2>How it stands</h2>
+    <p id="pwhat" class="rwhat"></p>
+    <div id="pchoices"></div>
+    <div><button class="btn quiet" id="pclose">Close</button></div>
+  </div>
+</div>
+
+<!-- Decisions 77 and 78 — the app notices a moment and asks a question.
+     It keeps no count, displays no fraction, and stores nothing. -->
+<div class="sheet" id="asksheet">
+  <div class="sheet-in">
+    <h2 id="askhead"></h2>
+    <p id="askwhat" class="rwhat"></p>
+    <div id="askbody"></div>
+    <div id="askacts"></div>
+  </div>
+</div>
+
 <div id="commit">
   <div class="cm-in">
     <p class="cm-verse">Commit thy works unto the LORD, and thy thoughts shall be established.</p>
@@ -890,6 +1081,21 @@ footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--rule-soft)
     <p style="font-size:13px;margin-top:8px">Seconds. Five is the least it can be; there is no most.</p>
     <div><button class="btn" id="gsave">Save</button></div>
     <p class="said" id="said3"></p>
+
+    <!-- Decisions 80 to 82, and Decision 96. Both switches live under one
+         heading on purpose: §6.6's lesson is that a thing you cannot see
+         does not exist, so finding either one has to be finding both. -->
+    <h3>Priority</h3>
+    <p>A task can carry a letter &mdash; A, B, C or D &mdash; and a task without one is not lesser. On its own the letter does nothing but sit beside the line and be read.</p>
+
+    <h3 style="margin-top:18px">Sort by it</h3>
+    <p>With this on, a list is arranged by letter: A, then B, then C, then D, and everything unlettered after them in the order it was written. Off, nothing moves except by your own hand.</p>
+    <div class="twoway" id="sortsw"></div>
+
+    <h3 style="margin-top:18px">A letter on prepare lines</h3>
+    <p>Off, a prepare line carries no letter at all, and is arranged by hand whatever the sort says.</p>
+    <div class="twoway" id="prepsw"></div>
+    <p class="said" id="said13"></p>
 
     <!-- Decisions 67 and 68 — the chime is chosen, not fixed. The desk
          with a customer in front of you and the room with the door shut
@@ -1049,6 +1255,14 @@ let prepFirst = false;        // the swap — resets every sitting, every day
 let calOpen   = true;    // open on the very first look, so it cannot be missed
 let lastToday = todayKey();
 
+/* Decision 79 — a sub-list shows in full whenever a day is opened. It
+   can be folded, and the fold lasts for that sitting only. Never saved,
+   and cleared the moment you leave the day: a day collapsed in September
+   that opened folded in March would be a tidied record made by the
+   user's own hand without him ever noticing he had made it. */
+let folded = {};
+function goDay(k){ view = k; folded = {}; }
+
 /* ══ day helpers ══════════════════════════════════════════ */
 function day(k, make){
   if(!S.days[k] && make) S.days[k] = { tasks:[], prep:[], c:null };
@@ -1057,15 +1271,71 @@ function day(k, make){
 function hasWriting(k){
   const d = S.days[k]; if(!d) return false;
   const live = a => (a||[]).some(i => (i.t||'').trim());
+  /* Decision 94 — a thanksgiving lights the ordinary dot. It is writing
+     on the day, so the dot is already the right mark and there is no
+     third one: a thanksgiving grid would let a man see at a glance which
+     days he gave thanks and which he did not, and Decision 14 refused
+     exactly that. */
+  if(d.th && (d.th.t||'').trim()) return true;
   return live(d.tasks) || live(d.prep);
 }
 function hasComment(k){
   const d = S.days[k]; if(!d) return false;
   if(d.c && (d.c.t||'').trim()) return true;
+  if(d.th && d.th.n && (d.th.n.t||'').trim()) return true;
   return ['tasks','prep'].some(L =>
     (d[L]||[]).some(i => i.n && (i.n.t||'').trim()));
 }
 function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ══ priority — Decisions 80 to 85, and 96 ════════════════
+   Two separate things. THE LETTER is a mark: it sits beside a line and
+   is read, and on its own it moves nothing. SORTING is the app putting
+   the list in letter order, and it is a switch a man throws himself.
+
+   That is what keeps Decision 15 whole — "a ticked item does not move,
+   paper behaviour" was written against the app rearranging a list
+   behind the user's back, and a switch a man found and threw is not the
+   app acting behind anybody. */
+
+const LETTERS = [
+  ['A','urgent and important'],
+  ['B','important, not urgent'],
+  ['C','urgent, not important'],
+  ['D','neither']
+];
+
+function sortOn(){ return !!S.sort; }
+function prepPriOn(){ return !!S.prepPri; }
+
+/* Decision 96 — the letter reaches a prepare line only behind its own
+   switch, off by default. With it off a prepare line carries no letter
+   at all, so there is nothing there for sorting to sort by: sorting has
+   no claim on that list, and a drag in it always sticks. */
+function canLetter(L){ return L === 'tasks' || prepPriOn(); }
+function sortClaims(L){ return sortOn() && canLetter(L); }
+
+/* Decision 82 — lettered first, A then B then C then D, and everything
+   unlettered after them in the order it was written. Top was refused
+   because turning sorting on would push an A task DOWN the screen under
+   every line a man never got round to labelling. */
+function rank(it){
+  const i = LETTERS.findIndex(x => x[0] === (it && it.p));
+  return i < 0 ? 9 : i;
+}
+
+/* Decision 84 — a closed day shows exactly as it was written, whatever
+   the switch says today. §4.2 refuses to let a closed day be edited, and
+   a sort is an edit performed by a setting. The order a man wrote his
+   list in is itself information.
+   Returns each item with the index it actually holds in storage, so a
+   drag always writes back to the right place. */
+function shown(L, closed){
+  const arr = day(view)[L] || [];
+  const pairs = arr.map((it,i) => ({ it, i }));
+  if(closed || !sortClaims(L)) return pairs;
+  return pairs.sort((a,b) => (rank(a.it) - rank(b.it)) || (a.i - b.i));
+}
 
 /* ══ render: the day ══════════════════════════════════════ */
 const $ = id => document.getElementById(id);
@@ -1101,6 +1371,16 @@ function render(){
     blocks.appendChild(listBlock(L, closed));
     if(i === 0 && !closed) blocks.appendChild(swapRow());
   });
+
+  /* Decision 92 — thanksgiving sits below both lists, and the swap never
+     reaches it. It is not a third list competing for the top: the swap
+     exists because two lists change places depending on the hour —
+     planning in the evening, working in the day — and thanksgiving has
+     no such hour. It is what a man writes when the day's work is
+     already on the page, and it is in the right company down there:
+     "Commit this day to God" is the work handed over, and this is the
+     thanks given back. */
+  blocks.appendChild(thanksBlock(closed));
 
   if(closed) blocks.appendChild(dayCommentBlock());
 
@@ -1210,17 +1490,35 @@ function listBlock(L, closed){
   h.textContent = L === 'tasks' ? 'Tasks for the day' : 'Prepare a day before';
   wrap.appendChild(h);
 
-  const items = day(view)[L] || [];
-  items.forEach(it => {
-    wrap.appendChild(itemRow(L, it, closed));
-    if(closed) wrap.appendChild(noteFor(L, it));
-  });
+  const host = document.createElement('div');
+  host.className = 'units';
+  wrap.appendChild(host);
+
+  shown(L, closed).forEach(p => host.appendChild(unitFor(L, p.it, p.i, closed)));
 
   if(!closed){
     wrap.appendChild(adder(L));
     wrap.appendChild(addBtn(L));      // Decision 57 — the same act, visible
+    armList(host, L);
   }
   return wrap;
+}
+
+/* A unit is a line and everything belonging to it — its steps and its
+   note. Dragging a task carries its steps with it, because a step is
+   part of the job rather than a job of its own. */
+function unitFor(L, it, idx, closed){
+  const unit = document.createElement('div');
+  unit.className = 'unit';
+  unit.dataset.idx = idx;
+  unit.appendChild(itemRow(L, it, closed));
+  subsInto(unit, L, it, closed);
+  unit.appendChild(noteFor(L, it, closed));   // Decision 86 — open days too
+  return unit;
+}
+
+function itemOf(L, id){
+  return (day(view, true)[L] || []).find(x => x.id === id) || null;
 }
 
 /* Enter is the fast path and stays. This is for the man who does not
@@ -1240,15 +1538,23 @@ function itemRow(L, it, closed){
   const row = document.createElement('div');
   row.className = 'item';
 
+  /* Decision 95 — the grip, first on the line and drawn on purpose.
+     A closed day has none: Decision 9 forbids the edit and Decision 84
+     calls a sort an edit, so a record cannot be rearranged by hand any
+     more than by a switch. The gap stays so the boxes still line up. */
+  row.appendChild(closed ? gripGap() : gripFor('Move this line'));
+
   const box = document.createElement('button');
   box.className = 'box' + (it.d ? ' on' : '');
   box.setAttribute('aria-label', it.d ? 'Done' : 'Not done');
   if(closed){ box.disabled = true; }
-  else box.onclick = () => {
-    const cur = day(view, true)[L].find(x => x.id === it.id);
-    if(cur){ cur.d = !cur.d; save(); render(); }
-  };
+  else box.onclick = () => tickParent(L, it.id);
   row.appendChild(box);
+
+  /* Decision 99 — the letter sits between the box and the task, where
+     the eye scanning a day will read it. Not among the verbs in the row
+     below: a letter is a mark, and everything down there is an action. */
+  if(canLetter(L) || it.p) row.appendChild(priSlot(L, it, closed));
 
   const mid = document.createElement('div');
   mid.className = 'mid';
@@ -1277,12 +1583,21 @@ function itemRow(L, it, closed){
     meta.appendChild(t);
   }
 
+  /* Decision 98 — a prepare line carries no commit. It is written and
+     done in one sitting with the gate's prayer still warm over it; a
+     task is carried through a whole day, and the burden grows between
+     the writing and the doing. That gap is what committing a task
+     exists to cover, and prepare does not have one. A man who does want
+     to pray over his preparation has "Commit this day to God" at the
+     foot of the same screen — §10.1's one movement.
+     A mark already made stays wherever it is: it records something that
+     happened, and §4.2 forbids tidying the record afterwards. */
   if(it.pray){
     const c = document.createElement('span');
     c.className = 'mpray';
     c.textContent = 'committed ' + shortStamp(it.pray);
     meta.appendChild(c);
-  } else if(!closed){
+  } else if(!closed && L === 'tasks'){
     const c = document.createElement('button');
     c.className = 'mcommit'; c.textContent = 'commit to God';
     c.setAttribute('aria-label','Commit this to God');
@@ -1309,6 +1624,32 @@ function itemRow(L, it, closed){
       closeRepeat(); render();
     });
     meta.appendChild(a);
+  }
+
+  /* Decisions 75 and 76 — this starts the first step. After that the
+     sub-list carries its own adder, the shape `+ add` already has under
+     each list, and this word steps aside. Both of the controls added to
+     this row go quiet the moment they have been used, which is the only
+     reason the row does not grow forever. */
+  if(!closed && (it.t||'').trim() && !Array.isArray(it.subs)){
+    const s = document.createElement('button');
+    s.className = 'mremind'; s.textContent = 'steps…';
+    s.setAttribute('aria-label','Put steps under this');
+    s.onclick = () => addSub(L, it.id);
+    meta.appendChild(s);
+  }
+
+  /* Decision 86 — a note may be written while the day is open. Editing
+     the line is not the same act as saying why it did not move: "Call
+     plumber" rewritten as "Call plumber — no answer" destroys the task
+     and keeps no record of what happened to it. The task stands as it
+     was written; the reason sits beside it. */
+  if(!closed && !it.n && (it.t||'').trim()){
+    const n = document.createElement('button');
+    n.className = 'mremind'; n.textContent = 'note…';
+    n.setAttribute('aria-label','Write a note beside this line');
+    n.onclick = () => startNote(L, it.id);
+    meta.appendChild(n);
   }
 
   if(meta.childElementCount) mid.appendChild(meta);
@@ -1366,56 +1707,612 @@ function focusAdder(L){
   if(el){ el.value=''; grow(el); el.focus(); }
 }
 
+/* ══ the letter on the line — Decisions 80 and 99 ═════════ */
+
+function priSlot(L, it, closed){
+  const b = document.createElement('button');
+  const has = !!it.p;
+  const live = !closed && canLetter(L);
+  b.className = 'pri' + (has ? ' set' : '') + (live ? '' : ' fixed') + (has ? '' : ' blank');
+  b.textContent = has ? it.p : '';
+  if(!live){
+    b.disabled = true;
+    b.setAttribute('aria-label', has ? 'Priority ' + it.p : 'No letter');
+    return b;
+  }
+  b.classList.remove('blank');
+  b.setAttribute('aria-label', has ? 'Priority ' + it.p + ' — change it' : 'Give this a letter');
+  b.onclick = () => openPri(L, it.id);
+  return b;
+}
+
+/* ══ steps under a line — Decisions 75 to 79 ══════════════
+   One kind of sub-line, and it is a line with a box: a note you never
+   intend to tick is a sub-line you never tick. Two kinds would mean two
+   shapes on the screen and a choice to make every time a line is added,
+   and Decision 60 already refuses to let the app work out what a man
+   meant. */
+
+function subsInto(unit, L, it, closed){
+  const subs = it.subs || [];
+  const live = !closed && Array.isArray(it.subs);
+  if(!subs.length && !live) return;
+
+  const shut = !!folded[it.id];
+
+  const fold = document.createElement('button');
+  fold.className = 'subfold';
+  fold.textContent = shut
+    ? 'show ' + subs.length + (subs.length === 1 ? ' step' : ' steps')
+    : 'fold';
+  fold.setAttribute('aria-expanded', String(!shut));
+  fold.onclick = () => { folded[it.id] = !folded[it.id]; render(); };
+
+  /* Decision 79 — a sub-list shows in full whenever a day is opened,
+     open days and closed days alike, because a parent with two ticked
+     steps and two bare ones is a more detailed record than this app has
+     ever held, and hiding it behind a tap would be tidying the mirror.
+     The fold is a way to get past a long list, never a way to store one
+     out of sight. */
+  if(subs.length && shut){ unit.appendChild(fold); return; }
+
+  const host = document.createElement('div');
+  host.className = 'units subs';
+  subs.forEach((s, i) => host.appendChild(subUnit(L, it, s, i, closed)));
+  unit.appendChild(host);
+
+  if(!closed){
+    host.appendChild(subAdder(L, it));
+    armSubs(host, L, it);
+  }
+  if(subs.length) unit.appendChild(fold);
+}
+
+function subOf(L, id, sid){
+  const it = itemOf(L, id);
+  return (it && (it.subs||[]).find(x => x.id === sid)) || null;
+}
+
+function subUnit(L, it, s, idx, closed){
+  const unit = document.createElement('div');
+  unit.className = 'unit';
+  unit.dataset.idx = idx;
+
+  const row = document.createElement('div');
+  row.className = 'subitem';
+
+  row.appendChild(closed ? gripGap() : gripFor('Move this step'));
+
+  const box = document.createElement('button');
+  box.className = 'box' + (s.d ? ' on' : '');
+  box.setAttribute('aria-label', s.d ? 'Done' : 'Not done');
+  if(closed) box.disabled = true;
+  else box.onclick = () => tickSub(L, it.id, s.id);
+  row.appendChild(box);
+
+  const ta = document.createElement('textarea');
+  ta.className = 'txt'; ta.rows = 1; ta.value = s.t || '';
+  if(closed) ta.readOnly = true;
+  else{
+    ta.oninput = () => {
+      grow(ta);
+      const cur = subOf(L, it.id, s.id);
+      if(cur){ cur.t = ta.value; save(); }
+    };
+    ta.onkeydown = e => {
+      if(e.key === 'Enter'){ e.preventDefault(); ta.blur(); focusSub(it.id); }
+    };
+  }
+  row.appendChild(ta);
+
+  if(!closed){
+    const k = document.createElement('button');
+    k.className = 'kill'; k.textContent = '×';
+    k.setAttribute('aria-label','Remove this step');
+    k.onclick = () => {
+      const cur = itemOf(L, it.id); if(!cur) return;
+      const i = (cur.subs||[]).findIndex(x => x.id === s.id);
+      if(i > -1){ cur.subs.splice(i,1); save(); render(); }
+    };
+    row.appendChild(k);
+  }
+
+  unit.appendChild(row);
+  return unit;
+}
+
+function subAdder(L, it){
+  const row = document.createElement('div');
+  row.className = 'subitem subadd';
+  row.appendChild(gripGap());
+
+  const box = document.createElement('span');
+  box.className = 'box'; row.appendChild(box);
+
+  const ta = document.createElement('textarea');
+  ta.className = 'txt'; ta.rows = 1;
+  ta.dataset.sub = it.id;
+  ta.placeholder = 'Add a step';
+
+  let sent = false;
+  const commit = () => {
+    if(sent) return false;
+    const v = ta.value.trim();
+    if(!v) return false;
+    sent = true;
+    ta.value = '';
+    const cur = itemOf(L, it.id);
+    if(!cur) return false;
+    if(!Array.isArray(cur.subs)) cur.subs = [];
+    cur.subs.push({ id:newId(), t:v, d:false });
+    save(); render(); focusSub(it.id);
+    return true;
+  };
+
+  ta.onfocus = () => {                 // claiming a step is writing — Decision 38
+    if(gateAtPen(view, () => focusSub(it.id))) ta.blur();
+  };
+  ta.oninput = () => grow(ta);
+  ta.onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); commit(); } };
+  ta.addEventListener('addnow', commit);
+  ta.onblur = () => {
+    if(commit()) return;
+    /* Tapped `steps…` and walked away without writing one: leave nothing
+       behind. An empty sub-list is furniture on a line that has none. */
+    const cur = itemOf(L, it.id);
+    if(cur && Array.isArray(cur.subs) && !cur.subs.length){
+      delete cur.subs; save(); render();
+    }
+  };
+  row.appendChild(ta);
+  return row;
+}
+
+function focusSub(id){
+  const el = document.querySelector('textarea[data-sub="' + id + '"]');
+  if(el){ el.value=''; grow(el); el.focus(); }
+}
+
+function addSub(L, id){
+  const cur = itemOf(L, id); if(!cur) return;
+  if(!Array.isArray(cur.subs)) cur.subs = [];
+  folded[id] = false;
+  save(); render(); focusSub(id);
+}
+
+/* Decision 77 — ticking the last step still outstanding asks after the
+   parent. It never ticks itself: a parent that did would be the app
+   counting boxes, deciding the job was finished, and marking the day on
+   the user's behalf — and Decision 47's guard admits no exception, ever.
+   Nothing is stored. The app notices a moment and asks a question; it
+   keeps no count, displays no fraction, and the closed day holds boxes
+   and never arithmetic. */
+function tickSub(L, id, sid){
+  const cur = itemOf(L, id); if(!cur) return;
+  const s = (cur.subs||[]).find(x => x.id === sid); if(!s) return;
+  const last = !s.d && (cur.subs||[]).every(x => x.id === sid || x.d);
+  s.d = !s.d;
+  save(); render();
+  if(s.d && last && !cur.d) askParent(L, cur);
+}
+
+/* Decision 78 — ticking a parent with steps outstanding lists them by
+   name, each with its own box. Ticking them silently was refused as a
+   tidied record; one yes/no across three lines was refused because
+   three lines are rarely all in the same state, and either answer would
+   be a lie about at least one of them. */
+function tickParent(L, id){
+  const cur = itemOf(L, id); if(!cur) return;
+  const out = (cur.subs||[]).filter(x => !x.d);
+  if(!cur.d && out.length){ askRest(L, cur, out); return; }
+  cur.d = !cur.d; save(); render();
+}
+
+function openAsk(){ $('asksheet').classList.add('open'); $('veil').classList.add('open'); }
+function closeAsk(){ $('asksheet').classList.remove('open'); $('veil').classList.remove('open'); }
+
+function askParent(L, it){
+  $('askhead').textContent = 'Is this done?';
+  $('askwhat').textContent = it.t || '';
+  $('askbody').innerHTML = '';
+  const acts = $('askacts'); acts.innerHTML = '';
+
+  const yes = document.createElement('button');
+  yes.className = 'btn'; yes.textContent = 'Yes';
+  yes.onclick = () => {
+    const cur = itemOf(L, it.id);
+    if(cur) cur.d = true;
+    save(); closeAsk(); render();
+  };
+  const no = document.createElement('button');
+  no.className = 'btn quiet'; no.textContent = 'No';
+  no.onclick = () => closeAsk();          // left bare, and that is an answer
+
+  acts.appendChild(yes); acts.appendChild(no);
+  openAsk();
+}
+
+function askRest(L, it, out){
+  $('askhead').textContent = 'Some steps are still bare';
+  $('askwhat').textContent = it.t || '';
+
+  const body = $('askbody'); body.innerHTML = '';
+  const marked = {};
+  out.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'askrow';
+
+    const b = document.createElement('button');
+    b.className = 'box';
+    b.setAttribute('aria-pressed','false');
+    b.setAttribute('aria-label', s.t || 'Step');
+    b.onclick = () => {
+      marked[s.id] = !marked[s.id];
+      b.classList.toggle('on', !!marked[s.id]);
+      b.setAttribute('aria-pressed', String(!!marked[s.id]));
+    };
+    row.appendChild(b);
+
+    const t = document.createElement('div');
+    t.className = 'asktext'; t.textContent = s.t || '';
+    row.appendChild(t);
+    body.appendChild(row);
+  });
+
+  const acts = $('askacts'); acts.innerHTML = '';
+  const go = document.createElement('button');
+  go.className = 'btn'; go.textContent = 'Tick it';
+  go.onclick = () => {
+    const cur = itemOf(L, it.id);
+    if(cur){
+      (cur.subs||[]).forEach(s => { if(marked[s.id]) s.d = true; });
+      cur.d = true;
+    }
+    save(); closeAsk(); render();
+  };
+  const no = document.createElement('button');
+  no.className = 'btn quiet'; no.textContent = 'Not yet';
+  no.onclick = () => closeAsk();          // nothing is applied
+
+  acts.appendChild(go); acts.appendChild(no);
+  openAsk();
+}
+
+/* ══ dragging a line — Decision 95 ═════════════════════════
+   A grip you can see. §6.6's house lesson is that in this product a
+   control which is not visible does not exist, and a long press with
+   nothing on the screen to announce it is exactly that — the calendar
+   fault rebuilt as a gesture. */
+
+let dragging = null;
+
+function gripFor(label){
+  const b = document.createElement('button');
+  b.className = 'grip';
+  b.setAttribute('aria-label', label);
+  b.innerHTML =
+    '<svg viewBox="0 0 10 16" width="10" height="16" fill="currentColor" aria-hidden="true">' +
+    '<circle cx="2" cy="3" r="1.1"/><circle cx="8" cy="3" r="1.1"/>' +
+    '<circle cx="2" cy="8" r="1.1"/><circle cx="8" cy="8" r="1.1"/>' +
+    '<circle cx="2" cy="13" r="1.1"/><circle cx="8" cy="13" r="1.1"/></svg>';
+  return b;
+}
+function gripGap(){
+  const s = document.createElement('span');
+  s.className = 'gripgap';
+  return s;
+}
+
+function armList(host, L){
+  host.querySelectorAll(':scope > .unit > .item > .grip').forEach(g => {
+    armGrip(g, host, {
+      blocked: () => sortClaims(L),
+      refuse:  () => sayDrag(host, L),
+      move:    (from, to) => moveIn(day(view, true)[L], from, to)
+    });
+  });
+}
+
+/* Decision 85 — a sub-line is dragged by hand at any time, sorting on
+   or off, because sorting never reaches inside a task. There is nothing
+   to slide back, so Decision 83 has no work to do here. */
+function armSubs(host, L, it){
+  host.querySelectorAll(':scope > .unit > .subitem > .grip').forEach(g => {
+    armGrip(g, host, {
+      blocked: () => false,
+      refuse:  () => {},
+      move:    (from, to) => {
+        const cur = itemOf(L, it.id);
+        if(cur) moveIn(cur.subs, from, to);
+      }
+    });
+  });
+}
+
+function moveIn(arr, from, to){
+  if(!Array.isArray(arr)) return;
+  if(from < 0 || from >= arr.length) return;
+  const [x] = arr.splice(from, 1);
+  arr.splice(Math.max(0, Math.min(arr.length, to)), 0, x);
+  save(); render();
+}
+
+function armGrip(grip, host, ctx){
+  grip.addEventListener('pointerdown', e => {
+    if(dragging) return;
+    if(e.button !== undefined && e.button !== 0) return;
+    e.preventDefault();
+
+    const unit = grip.closest('.unit');
+    if(!unit) return;
+    const rows = [...host.children].filter(el => el.classList.contains('unit'));
+    const from = rows.indexOf(unit);
+    if(from < 0) return;
+
+    dragging = {
+      unit, host, ctx, from, to: from, moved:false, line:null,
+      startY: e.clientY,
+      rects: rows.map(r => r.getBoundingClientRect())
+    };
+    try{ grip.setPointerCapture(e.pointerId); }catch(err){}
+
+    const mv = ev => dragMove(ev);
+    const up = () => {
+      grip.removeEventListener('pointermove', mv);
+      grip.removeEventListener('pointerup', up);
+      grip.removeEventListener('pointercancel', up);
+      dragEnd();
+    };
+    grip.addEventListener('pointermove', mv);
+    grip.addEventListener('pointerup', up);
+    grip.addEventListener('pointercancel', up);
+  });
+}
+
+function dragMove(e){
+  const d = dragging; if(!d) return;
+  const dy = e.clientY - d.startY;
+
+  if(!d.moved){
+    if(Math.abs(dy) < 4) return;        // a tap is not a drag
+    d.moved = true;
+    d.unit.classList.add('lifted');
+    d.line = document.createElement('div');
+    d.line.className = 'dropline';
+    d.host.appendChild(d.line);
+  }
+  d.unit.style.transform = 'translateY(' + dy + 'px)';
+
+  /* Where it would land. Nothing but the lifted line moves, so the
+     measurements taken when the finger went down stay true. */
+  const y = e.clientY;
+  let slot = 0;
+  for(let i = 0; i < d.rects.length; i++){
+    const r = d.rects[i];
+    if(y > r.top + r.height / 2) slot = i + 1;
+  }
+  d.to = slot;
+
+  const top = d.host.getBoundingClientRect().top;
+  const at = slot < d.rects.length
+           ? d.rects[slot].top - top
+           : d.rects[d.rects.length - 1].bottom - top;
+  d.line.style.top = (at - 1) + 'px';
+}
+
+function dragEnd(){
+  const d = dragging; dragging = null;
+  if(!d) return;
+  if(d.line) d.line.remove();
+  d.unit.classList.remove('lifted');
+  if(!d.moved){ d.unit.style.transform = ''; return; }
+
+  let to = d.to;
+  if(to > d.from) to -= 1;
+
+  /* Decision 83 — a drag made while sorting is on slides back. Two
+     hands cannot hold the same list: if it stuck, the order would be
+     part letter and part hand, and nothing on the screen would say
+     which line was where for which reason. */
+  if(d.ctx.blocked()){
+    d.unit.classList.add('sliding');
+    d.unit.style.transform = 'translateY(0px)';
+    setTimeout(() => {
+      d.unit.classList.remove('sliding');
+      d.unit.style.transform = '';
+    }, 240);
+    d.ctx.refuse();
+    return;
+  }
+
+  d.unit.style.transform = '';
+  if(to !== d.from) d.ctx.move(d.from, to);
+}
+
+/* The wording is Dickson's, and it does the harder half of the job. A
+   message that only refused would be an obstacle; this one names both
+   ways out, and teaches the mechanism at the moment a man is asking
+   about it. */
+function sayDrag(host, L){
+  const parent = host.parentNode; if(!parent) return;
+  let el = parent.querySelector('.dragsay');
+  if(!el){
+    el = document.createElement('p');
+    el.className = 'dragsay';
+    parent.insertBefore(el, host.nextSibling);
+  }
+  el.textContent = 'Sorting is on. Give this ' + (L === 'tasks' ? 'task' : 'line') +
+    ' a letter to move it up, or turn sorting off in Settings to arrange by hand.';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { if(el.parentNode) el.remove(); }, 9000);
+}
+
 /* ── the red layer ─────────────────────────────────────── */
+/* Decision 87 \u2014 a note written inside the day is plain: no stamp, no
+   date, and it stays plain. The stamp exists to say "this was written
+   later, from outside the day", and a note written at eleven in the
+   morning was not. Nor does that change at midnight: it was written
+   inside the day in August and it is still written inside the day in
+   March, and a date added at the boundary would only repeat the day the
+   note already sits under.
+
+   But a plain note CHANGED from outside its day did change from outside
+   it, and \u00a74.4's dates exist for exactly that \u2014 a note written the next
+   morning and one revised three weeks later are not the same testimony.
+   So it gains "edited" alone, and never a "written on". */
 function stampText(n){
-  if(!n || !n.w) return '';
+  if(!n) return '';
+  if(!n.w) return n.e ? 'edited ' + shortStamp(n.e) : '';
   let s = 'written ' + shortStamp(n.w);
   if(n.e && n.e !== n.w) s += ' \u00b7 edited ' + shortStamp(n.e);
   return s;
 }
 
-function noteFor(L, it){
+/* One note body, used by a line's note and by the thanksgiving's.
+   `home` is the day the note belongs to; `hold` reaches the live copy
+   in storage, because a re-render replaces every element on the page. */
+function noteBody(n, home, tag, hold){
   const box = document.createElement('div');
-
-  if(!it.n){
-    const b = document.createElement('button');
-    b.className = 'addnote'; b.textContent = '+ note';
-    b.onclick = () => {
-      const cur = day(view, true)[L].find(x => x.id === it.id);
-      cur.n = { t:'', w:todayKey(), e:null };
-      save(); render();
-      const t = document.querySelector('[data-note="' + it.id + '"]');
-      if(t) t.focus();
-    };
-    box.appendChild(b);
-    return box;
-  }
-
   box.className = 'note';
+
   const ta = document.createElement('textarea');
-  ta.className = 'note-body'; ta.rows = 1; ta.value = it.n.t;
-  ta.dataset.note = it.id;
-  ta.oninput = () => {
-    grow(ta);
-    const cur = day(view, true)[L].find(x => x.id === it.id);
-    if(cur && cur.n){
-      cur.n.t = ta.value;
-      if(cur.n.w && todayKey() !== cur.n.w) cur.n.e = todayKey();
-      save();
-      st.textContent = stampText(cur.n);
-    }
-  };
-  ta.onblur = () => {
-    const cur = day(view, true)[L].find(x => x.id === it.id);
-    if(cur && cur.n && !cur.n.t.trim()){ cur.n = null; save(); render(); }
-  };
-  box.appendChild(ta);
+  ta.className = 'note-body'; ta.rows = 1; ta.value = n.t || '';
+  ta.dataset.note = tag;
 
   const st = document.createElement('div');
-  st.className = 'stamp'; st.textContent = stampText(it.n);
+  st.className = 'stamp'; st.textContent = stampText(n);
+
+  ta.oninput = () => {
+    grow(ta);
+    const cur = hold.get(); if(!cur) return;
+    cur.t = ta.value;
+    if(todayKey() !== (cur.w || home)) cur.e = todayKey();
+    save();
+    st.textContent = stampText(cur);
+  };
+  ta.onblur = () => {
+    const cur = hold.get();
+    if(cur && !(cur.t||'').trim()){ hold.clear(); save(); render(); }
+  };
+
+  box.appendChild(ta);
   box.appendChild(st);
   return box;
 }
+
+/* Made plain while the day is open, stamped once the day is closed. */
+function startNote(L, id){
+  const cur = itemOf(L, id); if(!cur) return;
+  cur.n = { t:'', w: isClosed(view) ? todayKey() : null, e:null };
+  save(); render();
+  const t = document.querySelector('[data-note="' + id + '"]');
+  if(t) t.focus();
+}
+
+function noteFor(L, it, closed){
+  if(!it.n){
+    const box = document.createElement('div');
+    /* On an open day the way in is `note…` up in the row, beside the
+       other verbs. A closed day has no such row, so the control needs a
+       line of its own — and Decision 12 makes the note the one living
+       part of a closed day. */
+    if(!closed) return box;
+    const b = document.createElement('button');
+    b.className = 'addnote'; b.textContent = '+ note';
+    b.setAttribute('aria-label','Write a note beside this line');
+    b.onclick = () => startNote(L, it.id);
+    box.appendChild(b);
+    return box;
+  }
+  return noteBody(it.n, view, it.id, {
+    get:   () => { const c = itemOf(L, it.id); return c ? c.n : null; },
+    clear: () => { const c = itemOf(L, it.id); if(c) c.n = null; }
+  });
+}
+
+/* ══ thanksgiving — Decisions 89 to 94 ════════════════════
+   Decision 2 excluded it and Decision 89 amends that, for the second
+   time — the verse came back in Decisions 41 to 44, 58 and 66, and this
+   is the last piece §4.2 named as missing. It completes what §10.4
+   calls the most valuable thing this app could produce: the commit mark
+   gives what was prayed over in the morning beside what actually
+   happened by night, and this is the other half of that record — what
+   God did. Without it the closed day holds work and no thanks. */
+function thanksBlock(closed){
+  const wrap = document.createElement('section');
+  wrap.className = 'thanks';
+
+  const h = document.createElement('h2');
+  h.textContent = 'Thanksgiving';
+  wrap.appendChild(h);
+
+  const d = day(view, true);
+  const ta = document.createElement('textarea');
+  ta.className = 'th-body'; ta.rows = 1;
+  ta.value = d.th ? (d.th.t || '') : '';
+  ta.setAttribute('aria-label','Thanksgiving');
+
+  /* Decision 90 — one box, not a list. Ruled lines invite filling, and
+     a half-empty thanksgiving list reads as a shortfall. A box has no
+     lines to leave empty.
+     Decision 93 — nothing is printed inside it, in any state: no
+     prompt, no question, no suggestion, and no placeholder either. A
+     faint grey suggestion is writing put into an empty day by the app,
+     and "what are you thankful for today?" is an instruction wearing a
+     question mark. The heading, and an empty box. */
+  if(closed) ta.readOnly = true;
+  else{
+    ta.oninput = () => {
+      grow(ta);
+      const cur = day(view, true);
+      if(!cur.th) cur.th = { t:'', n:null };
+      cur.th.t = ta.value;
+      save(); paintDot();
+    };
+    ta.onblur = () => {
+      const cur = day(view, true);
+      if(cur.th && !(cur.th.t||'').trim() && !(cur.th.n && (cur.th.n.t||'').trim())){
+        cur.th = null; save(); paintDot();
+      }
+      /* There is no "+ add" here to end the writing, so putting the pen
+         down is the moment the calendar learns of it. Decision 94 — the
+         ordinary dot, and no mark of its own. */
+      renderCalIfOpen();
+    };
+  }
+  wrap.appendChild(ta);
+
+  /* Decision 91 — it behaves exactly like a task: open all day, fixed
+     at midnight, and a dated comment afterwards. No new mechanism; that
+     is a task's own life cycle. What was written at two in the
+     afternoon stands as it was written, and the thing only seen to be
+     God's hand three days later sits beside it, plainly marked as
+     having come later. */
+  if(closed && d.th){
+    if(d.th.n){
+      wrap.appendChild(noteBody(d.th.n, view, 'th', {
+        get:   () => { const c = day(view, true).th; return c ? c.n : null; },
+        clear: () => { const c = day(view, true).th; if(c) c.n = null; }
+      }));
+    } else if((d.th.t||'').trim()){
+      const b = document.createElement('button');
+      b.className = 'addnote'; b.textContent = '+ note';
+      b.setAttribute('aria-label','Write a note beside this thanksgiving');
+      b.onclick = () => {
+        const cur = day(view, true);
+        if(!cur.th) return;
+        cur.th.n = { t:'', w:todayKey(), e:null };
+        save(); render();
+        const t = document.querySelector('[data-note="th"]');
+        if(t) t.focus();
+      };
+      wrap.appendChild(b);
+    }
+  }
+  return wrap;
+}
+
+function renderCalIfOpen(){ if(calOpen) renderCal(); }
 
 function dayCommentBlock(){
   const wrap = document.createElement('section');
@@ -1565,7 +2462,12 @@ function futureIds(){
     const d = S.days[k];
     ['tasks','prep'].forEach(L => (d[L]||[]).forEach(it => {
       if((it.t||'').trim()) out.push(it.id);
+      /* A step written onto a Thursday is a thing at risk on that
+         Thursday like any other. So is a thanksgiving, though it has no
+         id of its own — one per day is the most there can be. */
+      (it.subs||[]).forEach(s => { if((s.t||'').trim()) out.push(s.id); });
     }));
+    if(d.th && (d.th.t||'').trim()) out.push(k + ':th');
   });
   return out;
 }
@@ -2253,7 +3155,7 @@ function renderCal(){
     if(hasComment(k)){ const s=document.createElement('i'); s.className='m-c'; mk.appendChild(s); }
     b.appendChild(mk);
 
-    b.onclick = () => { view = k; render(); };
+    b.onclick = () => { goDay(k); render(); };
     cells.appendChild(b);
   }
 }
@@ -2340,7 +3242,7 @@ async function readFile(file){
 
 function applyRestored(p){
   S = p; save();
-  view = todayKey(); prepFirst = false; gateBusy = false;
+  goDay(todayKey()); prepFirst = false; gateBusy = false;
   render();
 }
 
@@ -2674,6 +3576,90 @@ function paintRules(){
   });
 }
 
+/* ── the letter — Decisions 80 to 82 ────────────────────
+   §22.1 chose one character over four words because a phrase beside a
+   three-word task is four words too many, and that half of Decision 80
+   stands: the words never go on the line. They appear here, at the one
+   moment a man is choosing, and nowhere else. The words live where you
+   choose; the letter lives where you read. */
+let priTarget = null;
+
+function openPri(L, id){
+  const it = itemOf(L, id); if(!it) return;
+  priTarget = { L, id };
+  $('pwhat').textContent = it.t || '';
+
+  const box = $('pchoices');
+  box.innerHTML = '';
+  const row = (ch, words, on, val) => {
+    const b = document.createElement('button');
+    b.className = 'prow' + (on ? ' on' : '') + (val === null ? ' none' : '');
+    const s1 = document.createElement('b'); s1.textContent = ch;
+    const s2 = document.createElement('s'); s2.textContent = words;
+    b.appendChild(s1); b.appendChild(s2);
+    b.setAttribute('aria-pressed', String(on));
+    b.onclick = () => setPri(val);
+    box.appendChild(b);
+  };
+  LETTERS.forEach(([ch, words]) => row(ch, words, it.p === ch, ch));
+  /* Decision 80 — a task without a letter is not lesser, so this reads
+     as the plain fact rather than as the bottom of a ranking. */
+  row('—', 'no letter', !it.p, null);
+
+  $('psheet').classList.add('open');
+  $('veil').classList.add('open');
+}
+
+function closePri(){
+  $('psheet').classList.remove('open');
+  $('veil').classList.remove('open');
+  priTarget = null;
+}
+
+/* The only way a letter is ever set or changed. Never from a time,
+   never from a clock, never worked out from anything on the line —
+   Decision 60's rule: the app does not decide what you meant. A task
+   carrying "by 4pm" does not become urgent because four o'clock is
+   coming. */
+function setPri(ch){
+  if(!priTarget) return;
+  const cur = itemOf(priTarget.L, priTarget.id);
+  if(cur){
+    if(ch) cur.p = ch; else delete cur.p;
+    save();
+  }
+  closePri(); render();
+}
+$('pclose').onclick = closePri;
+
+/* ── the two switches — Decisions 81 and 96 ──────────────
+   A switch in this app is two buttons rather than a slider, because
+   Decision 88 wants a control that plainly reads as one and shows that
+   a tap landed. Both live under one heading: §6.6's lesson is that a
+   thing you cannot see does not exist, so finding either has to be
+   finding both. */
+function paintSwitches(){
+  const pair = (host, on, set, said) => {
+    if(!host) return;
+    host.innerHTML = '';
+    [[false,'Off'], [true,'On']].forEach(([v, txt]) => {
+      const b = document.createElement('button');
+      b.className = 'numbtn' + (on === v ? ' on' : '');
+      b.textContent = txt;
+      b.setAttribute('aria-pressed', String(on === v));
+      b.onclick = () => {
+        set(v); save(); paintSwitches(); render();
+        say('said13', said(v));
+      };
+      host.appendChild(b);
+    });
+  };
+  pair($('sortsw'), sortOn(), v => { S.sort = v; },
+       v => v ? 'Sorted by letter' : 'Arranged by hand');
+  pair($('prepsw'), prepPriOn(), v => { S.prepPri = v; },
+       v => v ? 'Prepare lines take a letter' : 'No letter on prepare lines');
+}
+
 /* ── commit ─────────────────────────────── */
 $('cmx').onclick = closeCommit;          // ends instantly and silently
 $('cmclock').onclick = prayPause;
@@ -2707,7 +3693,7 @@ $('greetx').onclick = () => $('greet').classList.remove('up');
 
 function step(n){
   const d = dateOf(view); d.setDate(d.getDate() + n);
-  view = keyOf(d); calMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+  goDay(keyOf(d)); calMonth = new Date(d.getFullYear(), d.getMonth(), 1);
   render();
 }
 $('prev').onclick = () => step(-1);
@@ -2737,6 +3723,7 @@ function openGateSheet(on, over){
     openFinder();
     $('gahead').value = keepCfg().ahead;
     paintChime();
+    paintSwitches();
     $('ggreet').value = S.greet === undefined ? 'daily' : S.greet;
     fillCode();
     paintRules();
@@ -2818,7 +3805,10 @@ $('chear').onclick = chimeDemo;
 $('icsgo').onclick = () => closeIcsSay(true);    // this tap is the hand that opens the share sheet
 $('icsno').onclick = () => closeIcsSay(false);
 
-$('veil').onclick    = () => { openGateSheet(false); closeCapture(); closeRepeat(); closeIcsSay(false); };
+/* Backing out of either new sheet applies nothing — Decision 78's
+   "not yet", reached by the veil instead of the button. */
+$('veil').onclick    = () => { openGateSheet(false); closeCapture(); closeRepeat();
+                               closeIcsSay(false); closePri(); closeAsk(); };
 $('makebtn').onclick = fillCode;
 
 $('copybtn').onclick = async () => {

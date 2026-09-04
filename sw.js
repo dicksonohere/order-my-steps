@@ -2,7 +2,7 @@
    Caches the page so it opens with no connection.
    It never touches your days: those live in localStorage, which a
    service worker cannot read, write or send. */
-const CACHE = 'oms-v4';
+const CACHE = 'oms-v5';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 /* The KJV is cached on first use rather than at install, so the app
    still opens instantly on a slow connection. Once fetched it is
